@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management - Judicial File Backup System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>🏛️ Judiciary System</h3>
+            <p>File Backup & Management</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item"><a href="dashboard.html"><i>📊</i> Dashboard</a></li>
+            <li class="nav-item"><a href="cases.html"><i>📁</i> Case Management</a></li>
+            <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+            <li class="nav-item"><a href="search.html"><i>🔍</i> Search Files</a></li>
+            <li class="nav-item"><a href="backup.html"><i>💾</i> Backup Management</a></li>
+            <li class="nav-item active"><a href="users.html"><i>👥</i> User Management</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <div>
+                <h2>User Management</h2>
+                <p class="text-light">Manage system users and permissions</p>
+            </div>
+            <div class="user-menu">
+                <button class="btn btn-primary" onclick="openModal('addUserModal')">
+                    <i>➕</i> Add New User
+                </button>
+            </div>
+        </header>
+
+        <!-- User Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card"><span class="stat-number" id="totalUsers">0</span><span class="stat-label">Total Users</span></div>
+            <div class="stat-card"><span class="stat-number" id="totalJudges">0</span><span class="stat-label">Judges</span></div>
+            <div class="stat-card"><span class="stat-number" id="totalClerks">0</span><span class="stat-label">Court Clerks</span></div>
+            <div class="stat-card"><span class="stat-number" id="totalAdmins">0</span><span class="stat-label">Administrators</span></div>
+        </div>
+
+        <!-- Pending Registrations -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Pending Registrations</h3>
+                <span class="badge badge-warning" id="pendingCount">0 pending approval</span>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table" id="pendingRegistrationsTable">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Court Station</th>
+                                <th>Applied</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Pending registrations dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>System Users</h3>
+                <div class="d-flex gap-2">
+                    <input type="search" id="userSearch" class="form-control" placeholder="Search users..." style="width: 200px;" onkeyup="searchUsers()">
+                    <button class="btn btn-outline" onclick="searchUsers()">🔍 Search</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Last Login</th>
+                                <th>Status</th>
+                                <th>Cases Assigned</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Users dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Permissions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Role Permissions</h3>
+            </div>
+            <div class="card-body">
+                <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                    <div>
+                        <h4>👑 Judge Permissions</h4>
+                        <ul style="color: var(--text-light); line-height: 1.8;">
+                            <li>✅ View all assigned cases</li>
+                            <li>✅ Upload and manage case files</li>
+                            <li>✅ Search across all documents</li>
+                            <li>✅ Generate case reports</li>
+                            <li>❌ Manage system users</li>
+                            <li>❌ Configure system settings</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>📋 Court Clerk Permissions</h4>
+                        <ul style="color: var(--text-light); line-height: 1.8;">
+                            <li>✅ Upload files to any case</li>
+                            <li>✅ Manage case metadata</li>
+                            <li>✅ Search and retrieve documents</li>
+                            <li>✅ Generate basic reports</li>
+                            <li>❌ Delete case files</li>
+                            <li>❌ Manage user accounts</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>⚙️ Administrator Permissions</h4>
+                        <ul style="color: var(--text-light); line-height: 1.8;">
+                            <li>✅ Full system access</li>
+                            <li>✅ Manage all user accounts</li>
+                            <li>✅ Configure system settings</li>
+                            <li>✅ Manage backups and restore</li>
+                            <li>✅ Audit and system logs</li>
+                            <li>✅ Security configuration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal" id="addUserModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add / Edit User</h3>
+            <button class="btn btn-sm btn-outline" onclick="closeModal('addUserModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="addUserForm">
+                <input type="hidden" id="editingUserId">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="user@judiciary.go.ke" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-control form-select" id="role" required>
+                        <option value="">Select Role</option>
+                        <option>Judge</option>
+                        <option>Court Clerk</option>
+                        <option>Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">User ID</label>
+                    <input type="text" class="form-control" id="userId" placeholder="e.g., J-003 or CC-002" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Court Station</label>
+                    <select class="form-control form-select" id="courtStation">
+                        <option value="">Select Station</option>
+                        <option>Nairobi High Court</option>
+                        <option>Mombasa Law Courts</option>
+                        <option>Nakuru High Court</option>
+                        <option>Kisumu Law Courts</option>
+                        <option>Eldoret High Court</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Initial Password</label>
+                    <input type="password" class="form-control" id="password" value="Password123" required>
+                    <small class="text-light">User will be required to change password on first login</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('addUserModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveUser()">Save User</button>
+        </div>
+    </div>
+</div>
+
+<script>
+async function loadUsers() {
+    const table = document.querySelector('#usersTable tbody');
+    const res = await fetch('/api/users');
+    const users = await res.json();
+    table.innerHTML = users.map(u => `
+        <tr>
+            <td>${u.fullName}</td>
+            <td>${u.role}</td>
+            <td>${u.email}</td>
+            <td>${u.lastLogin || 'Never'}</td>
+            <td><span class="badge badge-${u.status === 'Active' ? 'success' : 'warning'}">${u.status}</span></td>
+            <td>${u.casesAssigned || 0}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline" onclick="editUser(${u.id})">Edit</button>
+                    <button class="btn btn-sm btn-outline" onclick="resetPassword(${u.id})">Reset PW</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    updateStats(users);
+}
+
+async function loadPendingRegistrations() {
+    const table = document.querySelector('#pendingRegistrationsTable tbody');
+    const res = await fetch('/api/pending-registrations');
+    const pending = await res.json();
+    document.getElementById('pendingCount').innerText = `${pending.length} pending approval`;
+    table.innerHTML = pending.map(r => `
+        <tr>
+            <td>${r.name}</td>
+            <td>${r.email}</td>
+            <td>${r.role}</td>
+            <td>${r.courtStation}</td>
+            <td>${r.applied}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-success" onclick="approveRegistration(${r.id})">Approve</button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectRegistration(${r.id})">Reject</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function saveUser() {
+    const id = document.getElementById('editingUserId').value;
+    const data = {
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        role: document.getElementById('role').value,
+        userId: document.getElementById('userId').value,
+        courtStation: document.getElementById('courtStation').value,
+        password: document.getElementById('password').value
+    };
+    try {
+        let res;
+        if (id) {
+            res = await fetch(`/api/users/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            });
+        } else {
+            res = await fetch(`/api/users`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            });
+        }
+        if (!res.ok) throw new Error('Failed to save user');
+        closeModal('addUserModal');
+        document.getElementById('addUserForm').reset();
+        loadUsers();
+    } catch(err) {
+        alert(err.message);
+    }
+}
+
+function editUser(id) {
+    fetch(`/api/users/${id}`).then(res => res.json()).then(u => {
+        document.getElementById('editingUserId').value = u.id;
+        document.getElementById('fullName').value = u.fullName;
+        document.getElementById('email').value = u.email;
+        document.getElementById('role').value = u.role;
+        document.getElementById('userId').value = u.userId;
+        document.getElementById('courtStation').value = u.courtStation;
+        openModal('addUserModal');
+    });
+}
+
+async function resetPassword(id) {
+    if (!confirm('Reset password for this user?')) return;
+    await fetch(`/api/users/${id}/reset-password`, { method: 'POST' });
+    alert('Password reset successfully');
+}
+
+async function approveRegistration(id) {
+    await fetch(`/api/pending-registrations/${id}/approve`, { method: 'POST' });
+    loadPendingRegistrations();
+    loadUsers();
+}
+
+async function rejectRegistration(id) {
+    const reason = prompt('Enter rejection reason:');
+    if (!reason) return;
+    await fetch(`/api/pending-registrations/${id}/reject`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({reason})
+    });
+    loadPendingRegistrations();
+}
+
+function searchUsers() {
+    const input = document.getElementById('userSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#usersTable tbody tr');
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(input) ? '' : 'none';
+    });
+}
+
+function openModal(id) { document.getElementById(id).style.display = 'block'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function updateStats(users) {
+    const total = users.length;
+    const judges = users.filter(u => u.role === 'Judge').length;
+    const clerks = users.filter(u => u.role === 'Court Clerk').length;
+    const admins = users.filter(u => u.role === 'Administrator').length;
+    document.getElementById('totalUsers').innerText = total;
+    document.getElementById('totalJudges').innerText = judges;
+    document.getElementById('totalClerks').innerText = clerks;
+    document.getElementById('totalAdmins').innerText = admins;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadUsers();
+    loadPendingRegistrations();
+});
+</script>
+</body>
+</html>

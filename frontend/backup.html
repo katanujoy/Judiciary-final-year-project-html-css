@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Management - Judicial File Backup System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>🏛️ Judiciary System</h3>
+                <p>File Backup & Management</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="dashboard.html"><i>📊</i> Dashboard</a></li>
+                <li class="nav-item"><a href="cases.html"><i>📁</i> Case Management</a></li>
+                <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Search Files</a></li>
+                <li class="nav-item active"><a href="backup.html"><i>💾</i> Backup Management</a></li>
+                <li class="nav-item"><a href="users.html"><i>👥</i> User Management</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>Backup Management</h2>
+                    <p class="text-light">Manage system backups and data protection</p>
+                </div>
+                <div class="user-menu">
+                    <span>Justice Joy Katanu</span>
+                    <div class="badge badge-success">Judge</div>
+                </div>
+            </header>
+
+            <!-- Backup Status Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">24.5GB</span>
+                    <span class="stat-label">Total Data</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">18.2GB</span>
+                    <span class="stat-label">Backed Up</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">65%</span>
+                    <span class="stat-label">Storage Used</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24</span>
+                    <span class="stat-label">Backup Points</span>
+                </div>
+            </div>
+
+            <div class="dashboard-widgets">
+                <!-- Backup Controls -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Backup Controls</h3>
+                    </div>
+                    <div class="widget-body">
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary flex-1" onclick="startBackup()">
+                                    <i>💾</i> Start Manual Backup
+                                </button>
+                                <button class="btn btn-outline flex-1" onclick="verifyBackups()">
+                                    <i>✅</i> Verify Backups
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Backup Type</label>
+                                <select class="form-control form-select">
+                                    <option>Full System Backup</option>
+                                    <option>Incremental Backup</option>
+                                    <option>Case Files Only</option>
+                                    <option>Database Only</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Storage Location</label>
+                                <select class="form-control form-select">
+                                    <option>Primary Server (Local)</option>
+                                    <option>Secondary Server (Off-site)</option>
+                                    <option>Cloud Storage</option>
+                                    <option>All Locations</option>
+                                </select>
+                            </div>
+                            
+                            <div class="alert" style="background: #fed7d7; color: #742a2a; padding: var(--spacing-md); border-radius: var(--border-radius);">
+                                <strong>⚠️ Storage Warning:</strong> Backup storage is at 65% capacity. Consider archiving older backups.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup Schedule -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Backup Schedule</h3>
+                        <button class="btn btn-sm btn-outline" onclick="openModal('scheduleModal')">Edit Schedule</button>
+                    </div>
+                    <div class="widget-body">
+                        <div class="schedule-list">
+                            <div class="schedule-item p-3 mb-2" style="border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                                <div class="d-flex justify-between align-center">
+                                    <div>
+                                        <strong>Daily Full Backup</strong>
+                                        <div style="color: var(--text-light);">Runs every day at 02:00 AM</div>
+                                    </div>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-item p-3 mb-2" style="border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                                <div class="d-flex justify-between align-center">
+                                    <div>
+                                        <strong>Weekly Archive</strong>
+                                        <div style="color: var(--text-light);">Runs every Sunday at 03:00 AM</div>
+                                    </div>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-item p-3" style="border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                                <div class="d-flex justify-between align-center">
+                                    <div>
+                                        <strong>Monthly Verification</strong>
+                                        <div style="color: var(--text-light);">First day of month at 04:00 AM</div>
+                                    </div>
+                                    <span class="badge badge-warning">Paused</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Backups -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Recent Backups</h3>
+                    </div>
+                    <div class="widget-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Type</th>
+                                        <th>Size</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024-10-15 02:00 AM</td>
+                                        <td>Full Backup</td>
+                                        <td>18.2 GB</td>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline" onclick="restoreBackup(1)">Restore</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-10-14 02:00 AM</td>
+                                        <td>Full Backup</td>
+                                        <td>18.1 GB</td>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline" onclick="restoreBackup(2)">Restore</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-10-13 02:00 AM</td>
+                                        <td>Full Backup</td>
+                                        <td>18.0 GB</td>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline" onclick="restoreBackup(3)">Restore</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>System Health</h3>
+                    </div>
+                    <div class="widget-body">
+                        <div class="health-metrics">
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-between mb-1">
+                                    <span>Storage Capacity</span>
+                                    <span>65% used</span>
+                                </div>
+                                <div style="background: #e2e8f0; border-radius: 4px; height: 8px;">
+                                    <div style="background: var(--warning-color); width: 65%; height: 100%; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-between mb-1">
+                                    <span>Backup Success Rate</span>
+                                    <span>99.8%</span>
+                                </div>
+                                <div style="background: #e2e8f0; border-radius: 4px; height: 8px;">
+                                    <div style="background: var(--success-color); width: 99.8%; height: 100%; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-between mb-1">
+                                    <span>System Uptime</span>
+                                    <span>99.9%</span>
+                                </div>
+                                <div style="background: #e2e8f0; border-radius: 4px; height: 8px;">
+                                    <div style="background: var(--success-color); width: 99.9%; height: 100%; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-item">
+                                <div class="d-flex justify-between mb-1">
+                                    <span>Data Integrity</span>
+                                    <span>100%</span>
+                                </div>
+                                <div style="background: #e2e8f0; border-radius: 4px; height: 8px;">
+                                    <div style="background: var(--success-color); width: 100%; height: 100%; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Backup Schedule</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('scheduleModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label class="form-label">Backup Frequency</label>
+                        <select class="form-control form-select">
+                            <option>Daily</option>
+                            <option>Weekly</option>
+                            <option>Monthly</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" class="form-control" value="02:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Backup Type</label>
+                        <select class="form-control form-select">
+                            <option>Full System Backup</option>
+                            <option>Incremental Backup</option>
+                            <option>Differential Backup</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Retention Period</label>
+                        <select class="form-control form-select">
+                            <option>30 days</option>
+                            <option>90 days</option>
+                            <option>1 year</option>
+                            <option>Indefinite</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="d-flex align-center gap-2">
+                            <input type="checkbox" checked> Enable automatic backups
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('scheduleModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function verifyBackups() {
+            showNotification('Verifying backup integrity...', 'info');
+            setTimeout(() => {
+                showNotification('All backups verified successfully!', 'success');
+            }, 3000);
+        }
+        
+        function saveSchedule() {
+            showNotification('Backup schedule updated successfully', 'success');
+            closeModal('scheduleModal');
+        }
+    </script>
+</body>
+</html>

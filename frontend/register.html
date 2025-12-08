@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Judicial File Backup System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏛️ Judicial File Backup System</h1>
+                <p>Create New Account</p>
+            </div>
+            
+            <form class="login-form" onsubmit="event.preventDefault(); handleRegistration()">
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Justice Joy Katanu" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Official Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="judge.katanu@judiciary.go.ke" required>
+                    <small class="text-light">Must use official judiciary email domain</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employeeId" class="form-label">Employee/Judge ID</label>
+                    <input type="text" id="employeeId" class="form-control" placeholder="J-001 or EMP-123" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="courtStation" class="form-label">Court Station</label>
+                    <select id="courtStation" class="form-control form-select" required>
+                        <option value="">Select Court Station</option>
+                        <option value="nairobi">Nairobi High Court</option>
+                        <option value="mombasa">Mombasa Law Courts</option>
+                        <option value="nakuru">Nakuru High Court</option>
+                        <option value="kisumu">Kisumu Law Courts</option>
+                        <option value="eldoret">Eldoret High Court</option>
+                        <option value="machakos">Machakos Law Courts</option>
+                        <option value="nyeri">Nyeri High Court</option>
+                        <option value="other">Other Station</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role" class="form-label">Role</label>
+                    <select id="role" class="form-control form-select" required>
+                        <option value="">Select your role</option>
+                        <option value="judge">Judge</option>
+                        <option value="clerk">Court Clerk</option>
+                        <option value="registrar">Court Registrar</option>
+                        <option value="admin">System Administrator</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                    <div class="password-strength mt-1">
+                        <div style="display: flex; gap: 4px;">
+                            <div style="flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px;" id="strength1"></div>
+                            <div style="flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px;" id="strength2"></div>
+                            <div style="flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px;" id="strength3"></div>
+                            <div style="flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px;" id="strength4"></div>
+                        </div>
+                        <small class="text-light">Password must be at least 8 characters with uppercase, lowercase, and numbers</small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="d-flex align-center gap-2">
+                        <input type="checkbox" required>
+                        I agree to the <a href="#" onclick="openModal('termsModal')">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="d-flex align-center gap-2">
+                        <input type="checkbox" required>
+                        I confirm that I am an authorized judicial officer
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+                    <span class="spinner" id="registerSpinner" style="display: none;"></span>
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="text-center mt-3">
+                <p>Already have an account? <a href="index.html">Login here</a></p>
+            </div>
+            
+            <div class="mt-4 p-3 registration-info">
+                <h4>Registration Information</h4>
+                <p style="color: var(--text-light); font-size: var(--font-size-sm);">
+                    Registration requires verification by system administrators. 
+                    You will receive an email once your account is approved.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="modal" id="termsModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Terms of Service</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('termsModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <h4>Judicial File Backup System - Terms of Service</h4>
+                    <p><strong>Last Updated:</strong> October 2024</p>
+                    
+                    <h5>1. Acceptance of Terms</h5>
+                    <p>By accessing and using the Judicial File Backup System, you agree to comply with these terms and all applicable laws and regulations.</p>
+                    
+                    <h5>2. Authorized Use</h5>
+                    <p>This system is exclusively for authorized judicial officers and staff. Unauthorized access is strictly prohibited.</p>
+                    
+                    <h5>3. Data Confidentiality</h5>
+                    <p>All case files and judicial documents are confidential. Users must maintain the highest standards of data protection.</p>
+                    
+                    <h5>4. System Security</h5>
+                    <p>Users are responsible for maintaining the security of their login credentials and must report any suspicious activity immediately.</p>
+                    
+                    <h5>5. Compliance</h5>
+                    <p>All usage must comply with the Kenyan Judicial Service Code of Conduct and Data Protection Act.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('termsModal')">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal" id="privacyModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Privacy Policy</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('privacyModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <h4>Data Privacy and Protection</h4>
+                    
+                    <h5>1. Data Collection</h5>
+                    <p>We collect only necessary information for system access and audit trails.</p>
+                    
+                    <h5>2. Data Usage</h5>
+                    <p>User data is used exclusively for judicial system operations and will not be shared with third parties.</p>
+                    
+                    <h5>3. Data Retention</h5>
+                    <p>User activity logs are retained for security and compliance purposes as required by law.</p>
+                    
+                    <h5>4. Your Rights</h5>
+                    <p>You have the right to access and correct your personal information stored in the system.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('privacyModal')">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

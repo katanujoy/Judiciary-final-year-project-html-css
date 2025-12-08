@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Judicial File Backup System</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Minimal inline styling for demo spinner */
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏛️ Judicial File Backup System</h1>
+                <p>Secure Document Management for Kenyan Judiciary</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="judge@judiciary.go.ke" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="role" class="form-label">Role</label>
+                    <select id="role" class="form-control form-select" required>
+                        <option value="">Select your role</option>
+                        <option value="judge">Judge</option>
+                        <option value="clerk">Court Clerk</option>
+                        <option value="registrar">Court Registrar</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <!-- Login button -->
+                <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                    <span id="loginSpinner" style="display:none;" class="spinner"></span>
+                    Login to Dashboard
+                </button>
+            </form>
+
+            <!-- Registration link disabled for demo -->
+            <div class="text-center mt-3">
+                <p>Don't have an account? 
+                    <a href="register.html">Register here</a>
+                </p>
+            </div>
+
+            <div class="mt-4 p-3 demo-credentials">
+                <h4>Demo Credentials</h4>
+                <p><strong>Judge:</strong> judge@judiciary.go.ke / Password123</p>
+                <p><strong>Clerk:</strong> clerk@judiciary.go.ke / Password123</p>
+                <p><strong>Admin:</strong> admin@judiciary.go.ke / Password123</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const demoUsers = {
+            "judge@judiciary.go.ke": "Password123",
+            "clerk@judiciary.go.ke": "Password123",
+            "admin@judiciary.go.ke": "Password123"
+        };
+
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const role = document.getElementById("role").value;
+            const spinner = document.getElementById("loginSpinner");
+            const loginBtn = document.getElementById("loginBtn");
+
+            // Show spinner and disable button
+            spinner.style.display = "inline-block";
+            loginBtn.disabled = true;
+
+            setTimeout(() => {
+                spinner.style.display = "none";
+                loginBtn.disabled = false;
+
+                // Validate fields
+                if (!email || !password || !role) {
+                    alert("Please fill in all fields.");
+                    return;
+                }
+
+                // Check demo credentials
+                if (demoUsers[email] && demoUsers[email] === password) {
+                    alert("Login successful! Redirecting to dashboard...");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Invalid credentials. Please try again.");
+                }
+            }, 1200); // Simulate server delay
+        });
+    </script>
+</body>
+</html>
