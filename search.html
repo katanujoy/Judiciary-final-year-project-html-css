@@ -11,7 +11,7 @@
             background: linear-gradient(135deg, var(--navy) 0%, var(--dark-navy) 100%);
             color: white;
             padding: var(--spacing-xl);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-lg);
             margin-bottom: var(--spacing-lg);
         }
         
@@ -75,14 +75,12 @@
             font-size: 0.9rem;
             color: var(--slate);
             margin-top: var(--spacing-sm);
-            flex-wrap: wrap;
         }
         
         .result-actions {
             display: flex;
             gap: var(--spacing-sm);
             margin-top: var(--spacing-md);
-            flex-wrap: wrap;
         }
         
         .search-filters {
@@ -117,29 +115,6 @@
             color: var(--navy);
             padding: 2px 4px;
             border-radius: 3px;
-        }
-        
-        .saved-search {
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-sm);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-        
-        .saved-search:hover {
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        code {
-            background: var(--navy);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -317,7 +292,7 @@
             </div>
 
             <!-- Saved Searches -->
-            <div class="card" style="margin-top: var(--spacing-lg);">
+            <div class="card" style="margin-top: var(--spacing-xl);">
                 <div class="card-header">
                     <h3>Saved Searches</h3>
                 </div>
@@ -341,56 +316,9 @@
 
     <script src="script.js"></script>
     <script>
-        // ============ GLOBAL VARIABLES & CONSTANTS ============
-        const API_ENDPOINTS = {
-            search: '/api/search',
-            document: (id) => `/api/documents/${id}`
-        };
-
+        // Search functionality
         let currentSearchResults = [];
-        let isAdvancedVisible = false;
-
-        // ============ HELPER FUNCTIONS ============
-        function requireAuth() {
-            // Check if user is authenticated
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-            if (!token) {
-                showNotification('Please login to access search', 'error');
-                return false;
-            }
-            return true;
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 3000);
-        }
-
-        function getAuthHeaders() {
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': token ? `Bearer ${token}` : ''
-            };
-        }
-
-        // ============ SEARCH FUNCTIONALITY ============
-
+        
         async function performSearch(event) {
             if (event) event.preventDefault();
             
@@ -410,15 +338,30 @@
             spinner.style.display = 'inline-block';
             
             try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Prepare search parameters
+                const params = new URLSearchParams();
+                params.append('q', query);
                 
-                // Get mock results
-                const results = getMockResults(query);
-                currentSearchResults = results;
-                displaySearchResults(results);
+                // Add advanced filters if visible
+                if (document.getElementById('advancedOptions').style.display !== 'none') {
+                    const formData = new FormData(document.getElementById('searchForm'));
+                    for (const [key, value] of formData.entries()) {
+                        params.append(key, value);
+                    }
+                }
                 
-                showNotification(`Found ${results.length} documents`, 'success');
+                // Perform search
+                const response = await fetch(`${API_ENDPOINTS.search}?${params.toString()}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const results = await response.json();
+                    currentSearchResults = results;
+                    displaySearchResults(results);
+                } else {
+                    throw new Error('Search failed');
+                }
                 
             } catch (error) {
                 console.error('Search error:', error);
@@ -430,91 +373,7 @@
                 spinner.style.display = 'none';
             }
         }
-
-        function getMockResults(query) {
-            const mockResults = [
-                {
-                    id: 1,
-                    title: 'Court Ruling on Criminal Case CR-2024-001',
-                    filename: 'court_ruling_cr_2024_001.pdf',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Court Ruling',
-                    date: '2024-10-15',
-                    size: '2.1 MB',
-                    pages: '24',
-                    ocr_processed: true,
-                    snippet: 'The court finds the evidence presented compelling and rules in favor of the prosecution in the matter of financial fraud allegations. The defendant is found guilty on all counts.',
-                    relevance: 0.95
-                },
-                {
-                    id: 2,
-                    title: 'Witness Statement - John Smith',
-                    filename: 'witness_statement_john_smith.pdf',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Witness Statement',
-                    date: '2024-10-14',
-                    size: '1.8 MB',
-                    pages: '8',
-                    ocr_processed: true,
-                    snippet: 'I witnessed the incident on October 1st and can confirm the events as described in the police report regarding the land dispute. The boundary markings were clearly visible.',
-                    relevance: 0.87
-                },
-                {
-                    id: 3,
-                    title: 'Photographic Evidence - Scene Documentation',
-                    filename: 'evidence_photo_1.jpg',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Evidence',
-                    date: '2024-10-13',
-                    size: '4.2 MB',
-                    pages: '1',
-                    ocr_processed: false,
-                    snippet: 'Photographic evidence showing the scene of the incident with clear markings of the disputed property boundaries. The image was taken from the southwest corner.',
-                    relevance: 0.76
-                },
-                {
-                    id: 4,
-                    title: 'Affidavit of Support - Jane Doe',
-                    filename: 'affidavit_jane_doe.pdf',
-                    case_number: 'CV-2024-012',
-                    judge: 'Justice Mwangi',
-                    type: 'Affidavit',
-                    date: '2024-10-12',
-                    size: '1.2 MB',
-                    pages: '4',
-                    ocr_processed: true,
-                    snippet: 'I, Jane Doe, do solemnly swear that the following statement is true to the best of my knowledge regarding the property dispute in Nakuru County.',
-                    relevance: 0.68
-                },
-                {
-                    id: 5,
-                    title: 'Pleading - Motion to Dismiss',
-                    filename: 'motion_to_dismiss.pdf',
-                    case_number: 'CR-2024-002',
-                    judge: 'Justice Omondi',
-                    type: 'Pleading',
-                    date: '2024-10-11',
-                    size: '2.5 MB',
-                    pages: '12',
-                    ocr_processed: true,
-                    snippet: 'The defendant moves this honorable court to dismiss the charges for lack of evidence and improper procedure in the collection of alleged fraudulent documents.',
-                    relevance: 0.62
-                }
-            ];
-
-            // Filter based on query
-            const lowerQuery = query.toLowerCase();
-            return mockResults.filter(result => 
-                result.title.toLowerCase().includes(lowerQuery) ||
-                result.snippet.toLowerCase().includes(lowerQuery) ||
-                result.case_number.toLowerCase().includes(lowerQuery) ||
-                result.judge.toLowerCase().includes(lowerQuery)
-            );
-        }
-
+        
         function displaySearchResults(results) {
             const resultsContainer = document.getElementById('searchResults');
             
@@ -541,14 +400,14 @@
                 ${results.map((result, index) => createResultCard(result, index)).join('')}
             `;
         }
-
+        
         function createResultCard(result, index) {
             return `
                 <div class="result-card" id="result-${index}">
                     <div class="result-header">
                         <div>
                             <div class="result-title">
-                                <a href="javascript:void(0)" onclick="viewDocument('${result.id}')" style="color: var(--navy); text-decoration: none;">
+                                <a href="#" onclick="viewDocument('${result.id}')" style="color: var(--navy); text-decoration: none;">
                                     ${escapeHtml(result.title || result.filename)}
                                 </a>
                             </div>
@@ -603,15 +462,14 @@
                 </div>
             `;
         }
-
+        
         function highlightSearchTerms(text) {
             const query = document.getElementById('searchQuery').value.toLowerCase();
             if (!query) return escapeHtml(text);
             
+            const words = query.split(' ').filter(word => word.length > 2);
             let highlighted = escapeHtml(text);
             
-            // Split query into words and highlight each
-            const words = query.split(' ').filter(word => word.length > 2);
             words.forEach(word => {
                 const regex = new RegExp(`(${word})`, 'gi');
                 highlighted = highlighted.replace(regex, '<span class="highlight">$1</span>');
@@ -619,15 +477,56 @@
             
             return highlighted;
         }
-
+        
         function displayMockResults() {
-            const results = getMockResults('case');
-            currentSearchResults = results;
-            displaySearchResults(results);
+            const mockResults = [
+                {
+                    id: 1,
+                    title: 'Court Ruling on Criminal Case CR-2024-001',
+                    filename: 'court_ruling_cr_2024_001.pdf',
+                    case_number: 'CR-2024-001',
+                    judge: 'Justice Katanu',
+                    type: 'Court Ruling',
+                    date: '2024-10-15',
+                    size: '2.1 MB',
+                    pages: '24',
+                    ocr_processed: true,
+                    snippet: 'The court finds the evidence presented compelling and rules in favor of the prosecution in the matter of financial fraud allegations.',
+                    relevance: 0.95
+                },
+                {
+                    id: 2,
+                    title: 'Witness Statement - John Smith',
+                    filename: 'witness_statement_john_smith.pdf',
+                    case_number: 'CR-2024-001',
+                    judge: 'Justice Katanu',
+                    type: 'Witness Statement',
+                    date: '2024-10-14',
+                    size: '1.8 MB',
+                    pages: '8',
+                    ocr_processed: true,
+                    snippet: 'I witnessed the incident on October 1st and can confirm the events as described in the police report regarding the land dispute.',
+                    relevance: 0.87
+                },
+                {
+                    id: 3,
+                    title: 'Photographic Evidence - Scene Documentation',
+                    filename: 'evidence_photo_1.jpg',
+                    case_number: 'CR-2024-001',
+                    judge: 'Justice Katanu',
+                    type: 'Evidence',
+                    date: '2024-10-13',
+                    size: '4.2 MB',
+                    pages: '1',
+                    ocr_processed: false,
+                    snippet: 'Photographic evidence showing the scene of the incident with clear markings of the disputed property boundaries.',
+                    relevance: 0.76
+                }
+            ];
+            
+            displaySearchResults(mockResults);
         }
-
-        // ============ BUTTON FUNCTIONS ============
-
+        
         function toggleAdvanced() {
             const advanced = document.getElementById('advancedOptions');
             const toggleBtn = document.getElementById('toggleAdvanced');
@@ -635,37 +534,18 @@
             if (advanced.style.display === 'none') {
                 advanced.style.display = 'block';
                 toggleBtn.innerHTML = '<i>⬆️</i> Simple';
-                toggleBtn.classList.add('btn-primary');
-                toggleBtn.classList.remove('btn-outline');
-                isAdvancedVisible = true;
             } else {
                 advanced.style.display = 'none';
                 toggleBtn.innerHTML = '<i>⚙️</i> Advanced';
-                toggleBtn.classList.remove('btn-primary');
-                toggleBtn.classList.add('btn-outline');
-                isAdvancedVisible = false;
             }
         }
-
+        
         function performAdvancedSearch() {
-            const form = document.getElementById('searchForm');
-            const formData = new FormData(form);
-            const params = new URLSearchParams();
-            
-            // Collect all form data
-            for (const [key, value] of formData.entries()) {
-                params.append(key, value);
-            }
-            
-            // Show what would be sent in a real app
-            console.log('Advanced search params:', params.toString());
-            
-            // Perform search with advanced filters
             performSearch();
         }
-
+        
         function saveSearch() {
-            const query = document.getElementById('searchQuery').value.trim();
+            const query = document.getElementById('searchQuery').value;
             if (!query) {
                 showNotification('Please enter a search query first', 'error');
                 return;
@@ -683,10 +563,9 @@
                 localStorage.setItem('savedSearches', JSON.stringify(savedSearches));
                 
                 showNotification(`Search saved as "${name}"`, 'success');
-                updateSavedSearchesDisplay();
             }
         }
-
+        
         function loadSavedSearch() {
             const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
             if (savedSearches.length === 0) {
@@ -694,301 +573,110 @@
                 return;
             }
             
-            // Create list of saved searches
-            let options = '';
-            savedSearches.forEach((search, index) => {
-                options += `<option value="${index}">${search.name} - "${search.query}"</option>`;
-            });
+            // Show list of saved searches
+            const searchList = savedSearches.map((search, index) => 
+                `${index + 1}. ${search.name}: "${search.query}"`
+            ).join('\n');
             
-            const selectHtml = `
-                <div style="padding: 1rem;">
-                    <label class="form-label">Select saved search:</label>
-                    <select id="savedSearchSelect" class="form-control" style="width: 100%; margin-bottom: 1rem;">
-                        ${options}
-                    </select>
-                </div>
-            `;
-            
-            // Create custom modal
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 500px;">
-                    <div class="modal-header">
-                        <h3>Load Saved Search</h3>
-                        <button class="btn btn-sm btn-outline" onclick="this.closest('.modal').remove()">✕</button>
-                    </div>
-                    <div class="modal-body">
-                        ${selectHtml}
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline" onclick="this.closest('.modal').remove()">Cancel</button>
-                        <button class="btn btn-primary" onclick="loadSelectedSearch()">Load Search</button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        function loadSelectedSearch() {
-            const select = document.getElementById('savedSearchSelect');
-            const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
-            const index = parseInt(select.value);
+            const choice = prompt(`Saved searches:\n\n${searchList}\n\nEnter number to load:`);
+            const index = parseInt(choice) - 1;
             
             if (index >= 0 && index < savedSearches.length) {
                 document.getElementById('searchQuery').value = savedSearches[index].query;
                 showNotification(`Loaded search: ${savedSearches[index].name}`, 'success');
-                
-                // Close modal
-                document.querySelector('.modal.active').remove();
             }
         }
-
+        
         function loadSearch(name) {
             // Mock function for loading predefined searches
-            let query = '';
-            let searchName = '';
-            
             switch(name) {
                 case 'recent_cases':
-                    query = 'case_type:criminal AND date:2024';
-                    searchName = 'Recent Criminal Cases';
+                    document.getElementById('searchQuery').value = 'case_type:criminal AND date:2024';
                     break;
                 case 'land_disputes':
-                    query = '"land dispute" AND court:Nakuru';
-                    searchName = 'Land Disputes 2024';
+                    document.getElementById('searchQuery').value = '"land dispute" AND court:Nakuru';
                     break;
             }
-            
-            document.getElementById('searchQuery').value = query;
-            showNotification(`Loaded search: ${searchName}`, 'success');
-            performSearch();
+            showNotification(`Loaded search: ${name}`, 'success');
         }
-
-        function updateSavedSearchesDisplay() {
-            const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
-            const container = document.getElementById('savedSearches');
-            
-            if (savedSearches.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 1rem; color: var(--slate);">
-                        No saved searches yet. Save a search to see it here.
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-sm);">
-                    ${savedSearches.map((search, index) => `
-                        <div class="saved-search" onclick="loadSavedSearchItem(${index})" style="cursor: pointer;">
-                            <div style="display: flex; justify-content: space-between; align-items: start;">
-                                <div>
-                                    <div style="font-weight: 600; color: var(--navy);">${escapeHtml(search.name)}</div>
-                                    <div style="font-size: 0.9rem; color: var(--slate);">${escapeHtml(search.query)}</div>
-                                </div>
-                                <button class="btn btn-sm btn-outline" onclick="deleteSavedSearch(event, ${index})" style="margin-left: 0.5rem;">
-                                    <i>🗑️</i>
-                                </button>
-                            </div>
-                            <div style="font-size: 0.8rem; color: var(--slate); margin-top: 0.25rem;">
-                                ${new Date(search.timestamp).toLocaleDateString()}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function loadSavedSearchItem(index) {
-            const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
-            if (index >= 0 && index < savedSearches.length) {
-                document.getElementById('searchQuery').value = savedSearches[index].query;
-                showNotification(`Loaded search: ${savedSearches[index].name}`, 'success');
-                performSearch();
-            }
-        }
-
-        function deleteSavedSearch(event, index) {
-            event.stopPropagation();
-            
-            if (confirm('Delete this saved search?')) {
-                const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
-                savedSearches.splice(index, 1);
-                localStorage.setItem('savedSearches', JSON.stringify(savedSearches));
-                
-                showNotification('Search deleted', 'success');
-                updateSavedSearchesDisplay();
-            }
-        }
-
+        
         function exportResults() {
             if (currentSearchResults.length === 0) {
                 showNotification('No results to export', 'error');
                 return;
             }
             
-            try {
-                // Create CSV content
-                const headers = ['Title', 'Case Number', 'Judge', 'Type', 'Date', 'File', 'Size', 'Pages', 'OCR Processed'];
-                const rows = currentSearchResults.map(result => [
-                    result.title || result.filename,
-                    result.case_number || '',
-                    result.judge || '',
-                    result.type || '',
-                    result.date || '',
-                    result.filename || '',
-                    result.size || '',
-                    result.pages || '',
-                    result.ocr_processed ? 'Yes' : 'No'
-                ]);
-                
-                const csvContent = [
-                    headers.join(','),
-                    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-                ].join('\n');
-                
-                // Create download link
-                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `judicial_search_${new Date().toISOString().slice(0,10)}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                
-                showNotification(`Exported ${currentSearchResults.length} results to CSV`, 'success');
-            } catch (error) {
-                console.error('Export error:', error);
-                showNotification('Failed to export results', 'error');
-            }
+            // Create CSV content
+            const headers = ['Title', 'Case Number', 'Judge', 'Type', 'Date', 'File', 'Size'];
+            const rows = currentSearchResults.map(result => [
+                result.title || result.filename,
+                result.case_number || '',
+                result.judge || '',
+                result.type || '',
+                result.date || '',
+                result.filename || '',
+                result.size || ''
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `search_results_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification(`Exported ${currentSearchResults.length} results`, 'success');
         }
-
-        // Document action functions
+        
         function viewDocument(id) {
-            const result = currentSearchResults.find(r => r.id == id);
-            if (result) {
-                showNotification(`Opening document: ${result.title}`, 'info');
-                
-                // In a real app, this would open a document viewer
-                // For now, show a modal with document info
-                const modal = document.createElement('div');
-                modal.className = 'modal active';
-                modal.innerHTML = `
-                    <div class="modal-content" style="max-width: 800px;">
-                        <div class="modal-header">
-                            <h3>Document Viewer</h3>
-                            <button class="btn btn-sm btn-outline" onclick="this.closest('.modal').remove()">✕</button>
-                        </div>
-                        <div class="modal-body">
-                            <h4 style="color: var(--navy); margin-bottom: var(--spacing-sm);">${escapeHtml(result.title)}</h4>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
-                                <div><strong>Case:</strong> ${escapeHtml(result.case_number)}</div>
-                                <div><strong>Judge:</strong> ${escapeHtml(result.judge)}</div>
-                                <div><strong>Type:</strong> ${escapeHtml(result.type)}</div>
-                                <div><strong>Date:</strong> ${escapeHtml(result.date)}</div>
-                            </div>
-                            <div style="background: var(--light-gray); padding: var(--spacing-md); border-radius: var(--border-radius);">
-                                <p><strong>Document Preview:</strong></p>
-                                <p style="font-style: italic;">"${escapeHtml(result.snippet)}"</p>
-                            </div>
-                            <p style="margin-top: var(--spacing-md);">This is a preview. In a real application, you would see the full document here.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline" onclick="downloadDocument('${id}')">Download</button>
-                            <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            }
+            showNotification(`Viewing document ${id}...`, 'info');
+            // Implement document viewing
         }
-
+        
         function downloadDocument(id) {
-            const result = currentSearchResults.find(r => r.id == id);
-            if (result) {
-                showNotification(`Downloading: ${result.filename}`, 'success');
-                
-                // Simulate download
-                setTimeout(() => {
-                    showNotification(`${result.filename} downloaded successfully`, 'success');
-                }, 1000);
-            }
+            showNotification(`Downloading document ${id}...`, 'success');
+            // Implement document download
         }
-
+        
         function showDocumentInfo(id) {
-            const result = currentSearchResults.find(r => r.id == id);
+            const result = currentSearchResults.find(r => r.id === id);
             if (result) {
                 const info = `
                     Document Details:
-                    
-                    Title: ${result.title}
-                    Case Number: ${result.case_number}
-                    Presiding Judge: ${result.judge}
-                    Document Type: ${result.type}
-                    Date: ${result.date}
-                    File Name: ${result.filename}
-                    File Size: ${result.size}
-                    Pages: ${result.pages}
-                    OCR Processed: ${result.ocr_processed ? 'Yes' : 'No'}
-                    Relevance Score: ${Math.round(result.relevance * 100)}%
-                    
-                    Snippet:
-                    "${result.snippet}"
+                    - Title: ${result.title}
+                    - Case: ${result.case_number}
+                    - Judge: ${result.judge}
+                    - Type: ${result.type}
+                    - Date: ${result.date}
+                    - File: ${result.filename}
+                    - Size: ${result.size}
+                    - Pages: ${result.pages}
+                    - OCR: ${result.ocr_processed ? 'Processed' : 'Not processed'}
                 `;
-                
-                const modal = document.createElement('div');
-                modal.className = 'modal active';
-                modal.innerHTML = `
-                    <div class="modal-content" style="max-width: 600px;">
-                        <div class="modal-header">
-                            <h3>Document Details</h3>
-                            <button class="btn btn-sm btn-outline" onclick="this.closest('.modal').remove()">✕</button>
-                        </div>
-                        <div class="modal-body">
-                            <pre style="white-space: pre-wrap; font-family: var(--font-ui);">${escapeHtml(info)}</pre>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
+                alert(info);
             }
         }
-
+        
         function addToCase(id) {
-            const result = currentSearchResults.find(r => r.id == id);
-            if (result) {
-                showNotification(`Adding "${result.title}" to case...`, 'info');
-                
-                // Simulate process
-                setTimeout(() => {
-                    showNotification(`Document added to case ${result.case_number}`, 'success');
-                }, 500);
-            }
+            showNotification(`Adding document ${id} to case...`, 'info');
+            // Implement add to case functionality
         }
-
-        // ============ INITIALIZATION ============
+        
+        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Set up form submission
             const searchForm = document.getElementById('searchForm');
             if (searchForm) {
                 searchForm.addEventListener('submit', performSearch);
             }
-            
-            // Set default dates
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector('input[name="dateTo"]').value = today;
-            
-            // Load saved searches display
-            updateSavedSearchesDisplay();
-            
-            // Show welcome message
-            showNotification('Legal Search ready. Try searching for "case", "fraud", or "Justice Katanu"', 'info');
         });
     </script>
 </body>
