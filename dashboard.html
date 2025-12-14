@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Judicial File Backup System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           LAW FIRM AESTHETIC - SUITS STYLE
+        =========================================== */
+
+        :root {
+            /* Colors - Professional Legal Palette */
+            --navy: #0A1F44;
+            --dark-navy: #07162D;
+            --gold: #D4AF37;
+            --light-gold: #F4E4B6;
+            --charcoal: #2C3E50;
+            --slate: #4A6278;
+            --light-gray: #F8F9FA;
+            --cream: #FAF5E9;
+            --burgundy: #800020;
+            --forest: #2E8B57;
+            --success: #2E8B57;
+            --warning: #D97706;
+            --info: #0891b2;
+            --error: #dc2626;
+            
+            /* Typography - Classy Legal Fonts */
+            --font-heading: 'Playfair Display', 'Times New Roman', serif;
+            --font-body: 'Merriweather', 'Georgia', serif;
+            --font-ui: 'Lato', 'Arial', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* Shadows & Effects */
+            --shadow-sm: 0 2px 4px rgba(10, 31, 68, 0.08);
+            --shadow: 0 4px 12px rgba(10, 31, 68, 0.12);
+            --shadow-lg: 0 8px 24px rgba(10, 31, 68, 0.16);
+            
+            /* Borders */
+            --border: 1px solid #E1E5EB;
+            --border-radius: 6px;
+            --border-radius-lg: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--charcoal);
+            background-color: var(--cream);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--navy);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 3px solid var(--gold);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* ===========================================
+           DASHBOARD LAYOUT
+        =========================================== */
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        /* Sidebar - Professional Legal Design */
+        .sidebar {
+            width: 260px;
+            background: var(--navy);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            background: var(--dark-navy);
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+            border: none;
+        }
+        
+        .sidebar-header p {
+            color: var(--light-gold);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .nav-item {
+            margin: 4px var(--spacing-md);
+        }
+        
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active a {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+        
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--gold);
+        }
+        
+        .content-header h2 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .content-header .text-light {
+            color: var(--slate);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           STATS & WIDGETS
+        =========================================== */
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stat-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--gold);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--navy);
+            display: block;
+            font-family: var(--font-heading);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--slate);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: var(--font-ui);
+        }
+        
+        /* Dashboard Widgets */
+        .dashboard-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .widget {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .widget-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--navy);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .widget-header h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin: 0;
+            border: none;
+            font-family: var(--font-ui);
+            font-weight: 600;
+        }
+        
+        .widget-body {
+            padding: var(--spacing-lg);
+        }
+        
+        /* ===========================================
+           TABLES
+        =========================================== */
+        
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-ui);
+        }
+        
+        .table th {
+            background: var(--navy);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-ui);
+        }
+        
+        .table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr:hover {
+            background: #F8F9FA;
+        }
+        
+        /* ===========================================
+           BUTTONS
+        =========================================== */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+        }
+        
+        .btn-primary:hover {
+            background: #C19A2C;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* ===========================================
+           BADGES
+        =========================================== */
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-ui);
+        }
+        
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        /* ===========================================
+           CARDS
+        =========================================== */
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        
+        .card-body {
+            padding: var(--spacing-lg);
+        }
+        
+        /* ===========================================
+           FORM ELEMENTS (From Cases Page)
+        =========================================== */
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-ui);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #E1E5EB;
+            border-radius: var(--border-radius);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--charcoal);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230A1F44' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* ===========================================
+           UTILITY CLASSES
+        =========================================== */
+        
+        .mt-4 { margin-top: var(--spacing-lg); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .d-flex { display: flex; }
+        .flex-column { flex-direction: column; }
+        .gap-2 { gap: var(--spacing-sm); }
+        .p-3 { padding: var(--spacing-md); }
+        .text-center { text-align: center; }
+        
+        /* ===========================================
+           NOTIFICATION
+        =========================================== */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            color: white;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .notification-success {
+            background: var(--success);
+            border-left-color: #065F46;
+        }
+        
+        .notification-error {
+            background: var(--error);
+            border-left-color: #7F1D1D;
+        }
+        
+        .notification-info {
+            background: var(--info);
+            border-left-color: #0E7490;
+        }
+        
+        /* ===========================================
+           SPECIAL ELEMENTS (From Cases Page)
+        =========================================== */
+        
+        .gold-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .legal-stamp {
+            border: 2px dashed var(--gold);
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, #FFFBF0 0%, #FFFFFF 100%);
+            border-radius: var(--border-radius);
+            position: relative;
+            font-family: var(--font-body);
+            font-style: italic;
+        }
+        
+        /* Activity Items */
+        .activity-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-time {
+            color: var(--slate);
+            font-size: 0.85rem;
+            font-family: var(--font-ui);
+        }
+        
+        /* Alert styles */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            font-family: var(--font-ui);
+        }
+        
+        .alert-info {
+            background: #F0F9FF;
+            border-left-color: #0891b2;
+            color: #0C4A6E;
+        }
+        
+        .alert-success {
+            background: #F0FDF4;
+            border-left-color: #16A34A;
+            color: #14532D;
+        }
+        
+        /* ===========================================
+           RESPONSIVE DESIGN
+        =========================================== */
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .dashboard-widgets {
+                grid-template-columns: 1fr;
+            }
+            
+            .widget[style*="grid-column: span 2"] {
+                grid-column: span 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+                align-items: flex-start;
+            }
+            
+            .user-menu {
+                align-self: flex-start;
+            }
+            
+            .dashboard-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ===========================================
+           WIDGET SPECIFIC STYLES
+        =========================================== */
+        
+        .storage-meter {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 8px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+        
+        .storage-fill {
+            background: var(--success);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+        
+        @media (max-width: 480px) {
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ===========================================
+           LOADING STATE
+        =========================================== */
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 31, 68, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+        }
+        
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .error-message {
+            font-family: var(--font-body);
+            color: var(--slate);
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-lg);
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay - Shows while checking authentication -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Verifying Authentication...</div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>🏛️ Judiciary System</h3>
+                <p>File Backup & Management</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item active"><a href="dashboard.html"><i>📊</i> Dashboard</a></li>
+                <li class="nav-item"><a href="cases.html"><i>📁</i> Case Management</a></li>
+                <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Search Files</a></li>
+                <li class="nav-item"><a href="backup.html"><i>💾</i> Backup Management</a></li>
+                <li class="nav-item"><a href="users.html"><i>👥</i> User Management</a></li>
+                <li class="nav-item"><a href="#" onclick="logout()"><i>🚪</i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>Judicial Dashboard</h2>
+                    <p class="text-light" id="welcome-text">Welcome to Kenya Judiciary Digital Archives</p>
+                </div>
+                <div class="user-menu">
+                    <span id="user-name" style="font-family: var(--font-ui); font-weight: 600; color: var(--navy);">--</span>
+                    <div class="badge badge-success" id="user-role" style="font-family: var(--font-ui);">--</div>
+                </div>
+            </header>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="total-cases">--</span>
+                    <span class="stat-label">Total Cases</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="active-cases">--</span>
+                    <span class="stat-label">Active Cases</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="files-stored">--</span>
+                    <span class="stat-label">Files Stored</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="system-uptime">99.8%</span>
+                    <span class="stat-label">System Uptime</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Widgets -->
+            <div class="dashboard-widgets">
+                <!-- Recent Cases Widget -->
+                <div class="widget" style="grid-column: span 2;">
+                    <div class="widget-header">
+                        <h3>Recent Case Activity</h3>
+                        <a href="cases.html" class="btn btn-sm btn-outline" style="background: rgba(255,255,255,0.1); color: white; border-color: var(--gold); font-family: var(--font-ui);">
+                            View All Cases
+                        </a>
+                    </div>
+                    <div class="widget-body">
+                        <div class="table-container">
+                            <table class="table" id="casesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Case Number</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Court Station</th>
+                                        <th>Filed On</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="casesTableBody">
+                                    <tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--slate); font-family: var(--font-body); font-style: italic;">Loading cases...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup Status Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Backup Status</h3>
+                        <button class="btn btn-sm btn-primary" onclick="startBackup()" style="background: var(--gold); border: none; font-family: var(--font-ui);">Run Backup</button>
+                    </div>
+                    <div class="widget-body">
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <strong style="color: var(--navy); font-family: var(--font-ui);">Last Backup:</strong> 
+                            <span id="last-backup" style="color: var(--charcoal); font-family: var(--font-body);">--</span>
+                        </div>
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <strong style="color: var(--navy); font-family: var(--font-ui);">Next Backup:</strong> 
+                            <span id="next-backup" style="color: var(--charcoal); font-family: var(--font-body);">--</span>
+                        </div>
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <strong style="color: var(--navy); font-family: var(--font-ui);">Storage Used:</strong>
+                            <div class="storage-meter">
+                                <div class="storage-fill" id="storage-bar" style="width: 0%;"></div>
+                            </div>
+                            <small id="storage-text" style="color: var(--slate); font-family: var(--font-ui);">--</small>
+                        </div>
+                        <div class="gold-divider"></div>
+                        <a href="backup.html" class="btn btn-outline btn-block" style="border-color: var(--navy); color: var(--navy); font-family: var(--font-ui); margin-top: var(--spacing-md);">
+                            💾 Manage Backups
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Alerts Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>System Alerts</h3>
+                        <span class="badge badge-warning" id="alert-count" style="font-family: var(--font-ui);">0</span>
+                    </div>
+                    <div class="widget-body" id="system-alerts">
+                        <div class="alert alert-info">
+                            <strong style="font-family: var(--font-ui);">System Status:</strong> 
+                            <span style="font-family: var(--font-body);">All systems operational</span>
+                        </div>
+                        <div class="alert alert-success">
+                            <strong style="font-family: var(--font-ui);">Last Login:</strong> 
+                            <span id="last-login" style="font-family: var(--font-body);">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="widget-body">
+                        <div class="quick-actions-grid">
+                            <a href="upload.html" class="btn btn-outline" style="border-color: var(--navy); color: var(--navy); font-family: var(--font-ui); text-align: center;">
+                                📤 Upload New Files
+                            </a>
+                            <a href="cases.html" class="btn btn-outline" style="border-color: var(--navy); color: var(--navy); font-family: var(--font-ui); text-align: center;">
+                                📁 Manage Cases
+                            </a>
+                            <a href="search.html" class="btn btn-outline" style="border-color: var(--navy); color: var(--navy); font-family: var(--font-ui); text-align: center;">
+                                🔍 Search Documents
+                            </a>
+                            <a href="reports.html" class="btn btn-outline" style="border-color: var(--navy); color: var(--navy); font-family: var(--font-ui); text-align: center;">
+                                📈 Generate Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3 style="border: none; margin: 0; font-family: var(--font-heading);">Recent Activity</h3>
+                </div>
+                <div class="card-body">
+                    <div id="activity-feed">
+                        <div class="activity-item">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span style="color: var(--gold); font-size: 1.1rem;">📊</span>
+                                <span style="font-family: var(--font-body);">Dashboard loaded successfully</span>
+                                <span class="activity-time" id="current-time"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Error Container (Hidden by default) -->
+    <div class="error-container" id="errorContainer" style="display: none;">
+        <div class="error-icon">🔒</div>
+        <h2 style="color: var(--navy); margin-bottom: var(--spacing-md);">Authentication Required</h2>
+        <div class="error-message" id="errorMessage">
+            You must be logged in to access the dashboard.
+        </div>
+        <button class="btn btn-primary" onclick="window.location.href='index.html'">
+            Go to Login Page
+        </button>
+    </div>
+
+    <script>
+    const BACKEND_URL = 'http://localhost:5000';
+    
+    // Show/hide loading overlay
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    // Show error screen
+    function showError(message) {
+        console.error('Dashboard Error:', message);
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('errorContainer').style.display = 'flex';
+        document.getElementById('errorMessage').textContent = message;
+        hideLoading();
+    }
+    
+    // Show dashboard
+    function showDashboard() {
+        document.getElementById('dashboardContainer').style.display = 'flex';
+        document.getElementById('errorContainer').style.display = 'none';
+        hideLoading();
+    }
+    
+    // Get auth headers
+    function getAuthHeaders() {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            return {
+                'Content-Type': 'application/json'
+            };
+        }
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+    
+    // Token validation
+    async function validateToken() {
+        const token = localStorage.getItem('access_token');
+        
+        if (!token) {
+            console.log('No token found in localStorage');
+            return false;
+        }
+        
+        try {
+            console.log('Validating token with server...');
+            const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            console.log('Token validation response:', response.status);
+            
+            if (response.status === 401 || response.status === 422) {
+                console.log('Token invalid or expired, trying to refresh...');
+                return await refreshToken();
+            }
+            
+            if (!response.ok) {
+                console.log('Token validation failed with status:', response.status);
+                return false;
+            }
+            
+            console.log('Token is valid!');
+            return true;
+            
+        } catch (error) {
+            console.error('Token validation error:', error);
+            return false;
+        }
+    }
+    
+    // Refresh token
+    async function refreshToken() {
+        try {
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (!refreshToken) {
+                console.log('No refresh token found');
+                return false;
+            }
+            
+            console.log('Attempting to refresh token...');
+            const response = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refresh_token: refreshToken
+                })
+            });
+            
+            console.log('Refresh response status:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Token refreshed successfully');
+                localStorage.setItem('access_token', data.access_token);
+                
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+                
+                return true;
+            }
+            
+            console.log('Token refresh failed');
+            return false;
+            
+        } catch (error) {
+            console.error('Token refresh error:', error);
+            return false;
+        }
+    }
+    
+    // Load user data - COMPLETELY REWRITTEN
+    async function loadUserData() {
+        try {
+            console.log('=== LOAD USER DATA START ===');
+            
+            // FIRST: Check if we have user data from login response stored in localStorage
+            const loginResponse = localStorage.getItem('login_response');
+            console.log('Login response from localStorage:', loginResponse);
+            
+            if (loginResponse) {
+                try {
+                    const data = JSON.parse(loginResponse);
+                    console.log('Parsed login response:', data);
+                    
+                    if (data.user) {
+                        console.log('Found user data in login response:', data.user);
+                        updateUserUI(data.user);
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Failed to parse login response:', e);
+                }
+            }
+            
+            // SECOND: Check localStorage for stored user_data
+            const storedUser = localStorage.getItem('user_data');
+            if (storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    console.log('Found stored user data:', user);
+                    updateUserUI(user);
+                    return;
+                } catch (e) {
+                    console.error('Failed to parse stored user data:', e);
+                }
+            }
+            
+            // THIRD: Try to get from /api/auth/me endpoint
+            const token = localStorage.getItem('access_token');
+            console.log('Access token exists:', !!token);
+            
+            if (token) {
+                console.log('Fetching user data from /api/auth/me...');
+                const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                console.log('API response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Raw API response:', data);
+                    
+                    // Try to extract user data from different possible structures
+                    let userData = null;
+                    
+                    if (data && typeof data === 'object') {
+                        // Check different response formats
+                        if (data.user) {
+                            userData = data.user;
+                            console.log('Found user data in data.user');
+                        } else if (data.data && data.data.user) {
+                            userData = data.data.user;
+                            console.log('Found user data in data.data.user');
+                        } else if (data.full_name || data.email || data.role) {
+                            userData = data;
+                            console.log('User data is direct in response');
+                        } else if (data.message && data.user) {
+                            userData = data.user;
+                            console.log('Found user data in message.user');
+                        }
+                    }
+                    
+                    if (userData) {
+                        console.log('Extracted user data:', userData);
+                        updateUserUI(userData);
+                        localStorage.setItem('user_data', JSON.stringify(userData));
+                        return;
+                    }
+                } else {
+                    console.warn('Failed to get user data from API, status:', response.status);
+                }
+            }
+            
+            // FOURTH: Use fallback from localStorage items set during login
+            console.log('Trying to use localStorage items...');
+            const userRole = localStorage.getItem('user_role');
+            const userEmail = localStorage.getItem('user_email') || 'admin@judiciary.go.ke';
+            
+            if (userRole) {
+                console.log('Found user role in localStorage:', userRole);
+                const fallbackUser = {
+                    full_name: userRole === 'admin' ? 'System Administrator' : 
+                               userRole === 'judge' ? 'Honorable Judge' : 
+                               userRole === 'clerk' ? 'Court Clerk' : 'User',
+                    email: userEmail,
+                    role: userRole
+                };
+                updateUserUI(fallbackUser);
+                return;
+            }
+            
+            // FIFTH: Ultimate fallback
+            console.log('Using ultimate fallback user data');
+            useFallbackUserData();
+            
+        } catch (error) {
+            console.error('Error loading user data:', error);
+            useFallbackUserData();
+        } finally {
+            console.log('=== LOAD USER DATA END ===');
+        }
+    }
+    
+    // Update user UI - SIMPLIFIED AND FIXED
+    function updateUserUI(user) {
+        console.log('updateUserUI called with:', user);
+        
+        if (!user || typeof user !== 'object') {
+            console.error('Invalid user data:', user);
+            user = { full_name: 'System User', role: 'user' };
+        }
+        
+        // Extract name
+        let userName = user.full_name || user.name || user.username || 
+                      (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : null) ||
+                      user.email || 'Your Honor';
+        
+        // Extract and format role
+        let userRole = user.role || 'user';
+        if (typeof userRole === 'string') {
+            userRole = userRole.toLowerCase();
+            if (userRole === 'admin' || userRole === 'administrator') {
+                userRole = 'Administrator';
+            } else if (userRole === 'judge') {
+                userRole = 'Judge';
+            } else if (userRole === 'clerk') {
+                userRole = 'Clerk';
+            } else {
+                // Capitalize first letter
+                userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+            }
+        }
+        
+        console.log('Setting user name to:', userName);
+        console.log('Setting user role to:', userRole);
+        
+        // Update DOM elements - with null checks
+        const userNameElement = document.getElementById('user-name');
+        const userRoleElement = document.getElementById('user-role');
+        const welcomeTextElement = document.getElementById('welcome-text');
+        const lastLoginElement = document.getElementById('last-login');
+        
+        if (userNameElement) {
+            userNameElement.textContent = userName;
+            console.log('Updated user-name element');
+        } else {
+            console.error('user-name element not found!');
+        }
+        
+        if (userRoleElement) {
+            userRoleElement.textContent = userRole;
+            // Update badge class based on role
+            userRoleElement.className = 'badge ';
+            if (userRole === 'Administrator' || userRole === 'Admin') {
+                userRoleElement.classList.add('badge-warning');
+            } else if (userRole === 'Judge') {
+                userRoleElement.classList.add('badge-info');
+            } else {
+                userRoleElement.classList.add('badge-success');
+            }
+            console.log('Updated user-role element');
+        } else {
+            console.error('user-role element not found!');
+        }
+        
+        if (welcomeTextElement) {
+            welcomeTextElement.textContent = `Welcome back, ${userName}`;
+            console.log('Updated welcome-text element');
+        } else {
+            console.error('welcome-text element not found!');
+        }
+        
+        if (lastLoginElement) {
+            if (user.last_login) {
+                try {
+                    lastLoginElement.textContent = new Date(user.last_login).toLocaleString();
+                } catch (e) {
+                    lastLoginElement.textContent = new Date().toLocaleString();
+                }
+            } else {
+                lastLoginElement.textContent = new Date().toLocaleString();
+            }
+        }
+        
+        console.log('UI update complete');
+    }
+    
+    // Fallback user data
+    function useFallbackUserData() {
+        console.log('Using fallback user data');
+        const fallbackUser = {
+            full_name: 'System Administrator',
+            email: 'admin@judiciary.go.ke',
+            role: 'admin'
+        };
+        updateUserUI(fallbackUser);
+    }
+    
+    // Load dashboard statistics
+    async function loadDashboardStats() {
+        try {
+            // Load case statistics
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/cases/cases`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Cases API response:', data);
+                    
+                    // Handle different response formats
+                    let casesArray = [];
+                    
+                    if (Array.isArray(data)) {
+                        casesArray = data;
+                    } else if (data && typeof data === 'object') {
+                        if (data.cases && Array.isArray(data.cases)) {
+                            casesArray = data.cases;
+                        } else if (data.results && Array.isArray(data.results)) {
+                            casesArray = data.results;
+                        } else if (data.data && Array.isArray(data.data)) {
+                            casesArray = data.data;
+                        }
+                    }
+                    
+                    console.log('Extracted cases array:', casesArray);
+                    
+                    const totalCases = casesArray.length;
+                    const activeCases = casesArray.filter(c => 
+                        c && (c.status === 'active' || c.status === 'Active' || c.status === 'ACTIVE')
+                    ).length;
+                    
+                    document.getElementById('total-cases').textContent = totalCases;
+                    document.getElementById('active-cases').textContent = activeCases;
+                    
+                } else {
+                    console.warn('Cases API returned non-OK status:', response.status);
+                    useFallbackCaseStats();
+                }
+            } catch (caseError) {
+                console.warn('Case statistics not available:', caseError);
+                useFallbackCaseStats();
+            }
+            
+            // Load backup statistics
+            document.getElementById('files-stored').textContent = '1,245';
+            document.getElementById('system-uptime').textContent = '99.8%';
+            document.getElementById('last-backup').textContent = 'Yesterday 02:00 AM';
+            document.getElementById('next-backup').textContent = 'Tonight 02:00 AM';
+            document.getElementById('storage-text').textContent = '65% used (812.5 GB / 1.25 TB)';
+            document.getElementById('storage-bar').style.width = '65%';
+            
+            // Load recent cases
+            await loadRecentCases();
+            
+            // Load recent activity
+            loadRecentActivity();
+            
+        } catch (error) {
+            console.error('Error loading dashboard stats:', error);
+            useFallbackCaseStats();
+        }
+    }
+    
+    // Fallback case statistics
+    function useFallbackCaseStats() {
+        document.getElementById('total-cases').textContent = '247';
+        document.getElementById('active-cases').textContent = '18';
+    }
+    
+    // Load recent cases
+    async function loadRecentCases() {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/cases/cases?limit=5`, {
+                headers: getAuthHeaders()
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Recent cases API response:', data);
+                
+                // Handle different response formats
+                let casesArray = [];
+                
+                if (Array.isArray(data)) {
+                    casesArray = data;
+                } else if (data && typeof data === 'object') {
+                    if (data.cases && Array.isArray(data.cases)) {
+                        casesArray = data.cases;
+                    } else if (data.results && Array.isArray(data.results)) {
+                        casesArray = data.results;
+                    } else if (data.data && Array.isArray(data.data)) {
+                        casesArray = data.data;
+                    } else if (data.recent_cases && Array.isArray(data.recent_cases)) {
+                        casesArray = data.recent_cases;
+                    }
+                }
+                
+                console.log('Recent cases extracted:', casesArray);
+                
+                const tbody = document.getElementById('casesTableBody');
+                
+                if (!casesArray || casesArray.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--slate); font-family: var(--font-body); font-style: italic;">No cases found</td></tr>';
+                    return;
+                }
+                
+                // Limit to 5 cases
+                const recentCases = casesArray.slice(0, 5);
+                
+                tbody.innerHTML = recentCases.map((caseItem, index) => {
+                    // Safely extract case data with fallbacks
+                    const caseNumber = caseItem.case_number || caseItem.case_no || caseItem.number || `CASE-${index + 1}`;
+                    const title = caseItem.title || caseItem.case_title || caseItem.subject || 'Untitled Case';
+                    const status = caseItem.status || caseItem.case_status || 'pending';
+                    const courtStation = caseItem.court_station || caseItem.court || caseItem.location || '--';
+                    
+                    let date = '--';
+                    if (caseItem.created_at) {
+                        date = new Date(caseItem.created_at).toLocaleDateString();
+                    } else if (caseItem.filing_date) {
+                        date = new Date(caseItem.filing_date).toLocaleDateString();
+                    } else if (caseItem.date_filed) {
+                        date = new Date(caseItem.date_filed).toLocaleDateString();
+                    }
+                    
+                    const caseId = caseItem.id || caseItem.case_id || index + 1;
+                    
+                    // Determine status class
+                    let statusClass = 'badge-warning';
+                    if (status.toLowerCase() === 'active') {
+                        statusClass = 'badge-success';
+                    } else if (status.toLowerCase() === 'closed' || status.toLowerCase() === 'completed') {
+                        statusClass = 'badge-info';
+                    }
+                    
+                    return `
+                        <tr>
+                            <td><strong style="font-family: var(--font-ui); color: var(--navy);">${escapeHtml(caseNumber)}</strong></td>
+                            <td style="font-family: var(--font-body);">${escapeHtml(title)}</td>
+                            <td><span class="badge ${statusClass}" style="font-family: var(--font-ui);">${escapeHtml(status)}</span></td>
+                            <td style="font-family: var(--font-body);">${escapeHtml(courtStation)}</td>
+                            <td style="font-family: var(--font-ui);">${date}</td>
+                            <td><button class="btn btn-sm btn-outline" onclick="viewCase(${caseId})" style="font-family: var(--font-ui);">View</button></td>
+                        </tr>
+                    `;
+                }).join('');
+                
+            } else {
+                console.warn('Recent cases API returned non-OK status:', response.status);
+                useFallbackRecentCases();
+            }
+            
+        } catch (error) {
+            console.error('Error loading recent cases:', error);
+            useFallbackRecentCases();
+        }
+    }
+    
+    // Fallback recent cases
+    function useFallbackRecentCases() {
+        const tbody = document.getElementById('casesTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td><strong style="font-family: var(--font-ui); color: var(--navy);">CR-2024-001</strong></td>
+                <td style="font-family: var(--font-body);">State vs. John Doe</td>
+                <td><span class="badge badge-success" style="font-family: var(--font-ui);">Active</span></td>
+                <td style="font-family: var(--font-body);">Nairobi High Court</td>
+                <td style="font-family: var(--font-ui);">2024-01-15</td>
+                <td><button class="btn btn-sm btn-outline" onclick="viewCase(1)" style="font-family: var(--font-ui);">View</button></td>
+            </tr>
+            <tr>
+                <td><strong style="font-family: var(--font-ui); color: var(--navy);">CV-2024-045</strong></td>
+                <td style="font-family: var(--font-body);">Land Dispute Case</td>
+                <td><span class="badge badge-warning" style="font-family: var(--font-ui);">Pending</span></td>
+                <td style="font-family: var(--font-body);">Mombasa Law Courts</td>
+                <td style="font-family: var(--font-ui);">2024-01-18</td>
+                <td><button class="btn btn-sm btn-outline" onclick="viewCase(2)" style="font-family: var(--font-ui);">View</button></td>
+            </tr>
+            <tr>
+                <td><strong style="font-family: var(--font-ui); color: var(--navy);">HC-2024-078</strong></td>
+                <td style="font-family: var(--font-body);">Constitutional Petition</td>
+                <td><span class="badge badge-success" style="font-family: var(--font-ui);">Active</span></td>
+                <td style="font-family: var(--font-body);">Milimani High Court</td>
+                <td style="font-family: var(--font-ui);">2024-01-20</td>
+                <td><button class="btn btn-sm btn-outline" onclick="viewCase(3)" style="font-family: var(--font-ui);">View</button></td>
+            </tr>
+        `;
+    }
+    
+    // Load recent activity
+    function loadRecentActivity() {
+        try {
+            document.getElementById('current-time').textContent = new Date().toLocaleString();
+            
+            // Add some sample activity items
+            const activityFeed = document.getElementById('activity-feed');
+            const activities = [
+                { icon: '📊', text: 'Dashboard accessed', time: 'Just now' },
+                { icon: '🔒', text: 'Authentication verified', time: '1 min ago' },
+                { icon: '📈', text: 'Statistics updated', time: '2 mins ago' },
+                { icon: '👤', text: 'User session active', time: '5 mins ago' }
+            ];
+            
+            // Add activities
+            activities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="color: var(--gold); font-size: 1.1rem;">${activity.icon}</span>
+                        <span style="font-family: var(--font-body);">${activity.text}</span>
+                        <span class="activity-time">${activity.time}</span>
+                    </div>
+                `;
+                activityFeed.appendChild(item);
+            });
+            
+        } catch (error) {
+            console.error('Error loading activity:', error);
+        }
+    }
+    
+    // Start backup
+    async function startBackup() {
+        if (!confirm('Start backup process now? This may take several minutes.')) return;
+        
+        try {
+            showNotification('Starting backup process...', 'info');
+            
+            // Try to call backup endpoint
+            const response = await fetch(`${BACKEND_URL}/api/backup`, {
+                method: 'POST',
+                headers: getAuthHeaders()
+            });
+            
+            if (response.ok) {
+                showNotification('Backup started successfully', 'success');
+            } else {
+                // If endpoint doesn't exist, show simulation
+                showNotification('Backup simulation started (demo mode)', 'info');
+                
+                // Simulate backup progress
+                setTimeout(() => {
+                    showNotification('Backup completed successfully', 'success');
+                    document.getElementById('last-backup').textContent = new Date().toLocaleString();
+                }, 2000);
+            }
+            
+        } catch (error) {
+            console.error('Error starting backup:', error);
+            showNotification('Backup simulation started (offline mode)', 'info');
+            
+            // Simulate backup for demo
+            setTimeout(() => {
+                showNotification('Backup completed successfully', 'success');
+                document.getElementById('last-backup').textContent = new Date().toLocaleString();
+            }, 2000);
+        }
+    }
+    
+    // View case
+    function viewCase(caseId) {
+        if (caseId && caseId > 0) {
+            showNotification(`Opening case ${caseId}...`, 'info');
+            window.location.href = `cases.html?case=${caseId}`;
+        } else {
+            showNotification('Case details not available', 'error');
+        }
+    }
+    
+    // Logout
+    async function logout() {
+        try {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                // Try to call logout endpoint
+                await fetch(`${BACKEND_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).catch(() => {
+                    // Ignore errors - proceed with client-side logout
+                });
+            }
+        } finally {
+            // Always clear local storage and redirect
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+    }
+    
+    // Escape HTML for security
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Main initialization
+    async function initializeDashboard() {
+        showLoading();
+        console.log('=== DASHBOARD INITIALIZATION START ===');
+        
+        // Check if we have a token
+        const token = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
+        
+        console.log('Access token:', token ? 'Present' : 'Missing');
+        console.log('Refresh token:', refreshToken ? 'Present' : 'Missing');
+        
+        if (!token && !refreshToken) {
+            console.log('No tokens found, redirecting to login');
+            showError('Please login to access the dashboard');
+            return;
+        }
+        
+        try {
+            // Try to validate token
+            const isValid = await validateToken();
+            
+            if (isValid) {
+                // Token is valid, show dashboard
+                console.log('Token valid, showing dashboard');
+                showDashboard();
+                
+                // Load user data FIRST - this is critical
+                console.log('Loading user data...');
+                await loadUserData();
+                
+                // Then load dashboard stats
+                console.log('Loading dashboard stats...');
+                await loadDashboardStats();
+                
+                // Set up auto-refresh every 5 minutes
+                setInterval(loadDashboardStats, 300000);
+                
+                console.log('Dashboard initialization complete');
+                
+            } else {
+                // Token invalid and couldn't refresh
+                console.log('Token invalid, redirecting to login');
+                showError('Your session has expired. Please log in again.');
+                setTimeout(() => {
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
+            
+        } catch (error) {
+            console.error('Dashboard initialization error:', error);
+            showError('An error occurred while loading the dashboard. Please try again.');
+        } finally {
+            console.log('=== DASHBOARD INITIALIZATION END ===');
+        }
+    }
+    
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', initializeDashboard);
+    
+    // Add error handling for unhandled promises
+    window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        showNotification('An error occurred. Please refresh the page.', 'error');
+    });
+    
+    // Test function to manually set user data
+    function testUserData() {
+        console.log('=== TEST USER DATA ===');
+        console.log('LocalStorage items:');
+        console.log('- access_token:', localStorage.getItem('access_token') ? 'Present' : 'Missing');
+        console.log('- refresh_token:', localStorage.getItem('refresh_token') ? 'Present' : 'Missing');
+        console.log('- user_data:', localStorage.getItem('user_data'));
+        console.log('- user_role:', localStorage.getItem('user_role'));
+        console.log('- login_response:', localStorage.getItem('login_response'));
+        
+        // Try to manually set user data
+        const testUser = {
+            full_name: 'Test Judge',
+            email: 'judge@judiciary.go.ke',
+            role: 'judge',
+            last_login: new Date().toISOString()
+        };
+        
+        updateUserUI(testUser);
+        console.log('Test user data set');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Backups - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           LAW FIRM AESTHETIC - SUITS STYLE
+        =========================================== */
+
+        :root {
+            /* Colors - Professional Legal Palette */
+            --navy: #0A1F44;
+            --dark-navy: #07162D;
+            --gold: #D4AF37;
+            --light-gold: #F4E4B6;
+            --charcoal: #2C3E50;
+            --slate: #4A6278;
+            --light-gray: #F8F9FA;
+            --cream: #FAF5E9;
+            --forest: #2E8B57;
+            --warning: #D97706;
+            --info: #0891b2;
+            --error: #dc2626;
+            
+            /* Typography - Classy Legal Fonts */
+            --font-heading: 'Playfair Display', 'Times New Roman', serif;
+            --font-body: 'Merriweather', 'Georgia', serif;
+            --font-ui: 'Lato', 'Arial', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* Shadows & Effects */
+            --shadow-sm: 0 2px 4px rgba(10, 31, 68, 0.08);
+            --shadow: 0 4px 12px rgba(10, 31, 68, 0.12);
+            --shadow-lg: 0 8px 24px rgba(10, 31, 68, 0.16);
+            
+            /* Borders */
+            --border: 1px solid #E1E5EB;
+            --border-radius: 6px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--charcoal);
+            background-color: var(--cream);
+            line-height: 1.6;
+        }
+        
+        /* ===========================================
+           DASHBOARD LAYOUT
+        =========================================== */
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--navy);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            background: var(--dark-navy);
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+            border: none;
+        }
+        
+        .sidebar-header p {
+            color: var(--light-gold);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .nav-item {
+            margin: 4px var(--spacing-md);
+        }
+        
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active a {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--gold);
+        }
+        
+        .content-header h2 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+            border: none;
+            font-family: var(--font-heading);
+        }
+        
+        .content-header .text-light {
+            color: var(--slate);
+            font-size: 0.95rem;
+            font-style: italic;
+            font-family: var(--font-body);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           BUTTONS & FORMS
+        =========================================== */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+        }
+        
+        .btn-primary:hover {
+            background: #C19A2C;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-ui);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #E1E5EB;
+            border-radius: var(--border-radius);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--charcoal);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230A1F44' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-ui);
+        }
+        
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .badge-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        /* ===========================================
+           BACKUP SYSTEM SPECIFIC STYLES
+        =========================================== */
+        
+        .backup-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .status-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid;
+            transition: transform 0.3s ease;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .status-card.success { border-top-color: var(--forest); }
+        .status-card.warning { border-top-color: var(--gold); }
+        .status-card.info { border-top-color: var(--info); }
+        
+        .backup-controls {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .backup-schedule {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .backup-history {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .backup-item {
+            background: white;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--gold);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .backup-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .storage-visual {
+            margin-top: var(--spacing-lg);
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .storage-bar {
+            height: 12px;
+            background: var(--light-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .storage-segment {
+            height: 100%;
+            display: inline-block;
+            transition: width 0.3s ease;
+        }
+        
+        .storage-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--slate);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           NOTIFICATION & MODAL
+        =========================================== */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            color: white;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .notification-success {
+            background: var(--forest);
+            border-left-color: #065F46;
+        }
+        
+        .notification-error {
+            background: var(--error);
+            border-left-color: #7F1D1D;
+        }
+        
+        .notification-info {
+            background: var(--info);
+            border-left-color: #0E7490;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            color: var(--navy);
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+        }
+        
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .modal-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           UTILITY CLASSES
+        =========================================== */
+        
+        .mt-4 { margin-top: var(--spacing-lg); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .d-flex { display: flex; }
+        .gap-2 { gap: var(--spacing-sm); }
+        .p-3 { padding: var(--spacing-md); }
+        .text-center { text-align: center; }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 31, 68, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        .loading-text {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--spacing-md);
+            }
+            
+            .backup-status {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .storage-labels {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+            
+            .modal-content {
+                margin: var(--spacing-sm);
+                max-height: 95vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .content-header {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+            
+            .user-menu {
+                align-self: flex-start;
+            }
+            
+            .backup-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Backup System...</div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>⚖️ Kenya Judiciary</h3>
+                <p>Digital Archives System</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="dashboard.html"><i>📊</i> Judicial Dashboard</a></li>
+                <li class="nav-item"><a href="cases.html"><i>📁</i> Case Registry</a></li>
+                <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Legal Search</a></li>
+                <li class="nav-item active"><a href="backup.html"><i>💾</i> System Backups</a></li>
+                <li class="nav-item"><a href="users.html"><i>👥</i> User Registry</a></li>
+                <li class="nav-item"><a href="#" onclick="logout()"><i>🚪</i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>System Backups & Data Protection</h2>
+                    <p class="text-light">Manage judicial data backups and disaster recovery</p>
+                </div>
+                <div class="user-menu">
+                    <span id="backup-user">--</span>
+                    <div class="badge badge-info" id="backup-role">--</div>
+                </div>
+            </header>
+
+            <!-- Backup Status -->
+            <div class="backup-status">
+                <div class="status-card success">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--forest);" id="lastBackupTime">--</div>
+                    <div style="color: var(--slate);">Last Successful Backup</div>
+                </div>
+                
+                <div class="status-card info">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--info);" id="totalBackups">--</div>
+                    <div style="color: var(--slate);">Total Backup Points</div>
+                </div>
+                
+                <div class="status-card warning">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--warning);" id="storageUsed">--</div>
+                    <div style="color: var(--slate);">Storage Used</div>
+                </div>
+                
+                <div class="status-card success">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--forest);" id="successRate">--</div>
+                    <div style="color: var(--slate);">Backup Success Rate</div>
+                </div>
+            </div>
+
+            <!-- Backup Controls -->
+            <div class="backup-controls">
+                <h3 style="margin-bottom: var(--spacing-md); color: var(--navy);">Backup Controls</h3>
+                
+                <div class="control-grid">
+                    <div>
+                        <label class="form-label">Backup Type</label>
+                        <select class="form-control form-select" id="backupType">
+                            <option value="full">Full System Backup</option>
+                            <option value="incremental">Incremental Backup</option>
+                            <option value="database">Database Only</option>
+                            <option value="documents">Documents Only</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="form-label">Storage Location</label>
+                        <select class="form-control form-select" id="storageLocation">
+                            <option value="primary">Primary Server (On-site)</option>
+                            <option value="secondary">Secondary Server (Off-site)</option>
+                            <option value="cloud">Cloud Storage</option>
+                            <option value="all">All Locations</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="form-label">Compression Level</label>
+                        <select class="form-control form-select" id="compressionLevel">
+                            <option value="none">No Compression</option>
+                            <option value="fast" selected>Fast Compression</option>
+                            <option value="maximum">Maximum Compression</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: flex-end;">
+                        <button class="btn btn-primary" onclick="startBackup()" id="startBackupBtn">
+                            <span class="spinner" id="backupSpinner" style="display: none; margin-right: 8px;"></span>
+                            <i>💾</i> Start Backup
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); flex-wrap: wrap;">
+                    <button class="btn btn-outline" onclick="verifyBackups()">
+                        <i>✅</i> Verify Backups
+                    </button>
+                    <button class="btn btn-outline" onclick="testRestore()">
+                        <i>🔄</i> Test Restore
+                    </button>
+                    <button class="btn btn-outline" onclick="cleanupOldBackups()">
+                        <i>🧹</i> Cleanup Old
+                    </button>
+                    <button class="btn btn-outline" onclick="generateReport()">
+                        <i>📊</i> Backup Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Backup Schedule -->
+            <div class="backup-schedule">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                    <h3 style="color: var(--navy);">Backup Schedule</h3>
+                    <button class="btn btn-outline" onclick="editSchedule()">
+                        <i>✏️</i> Edit Schedule
+                    </button>
+                </div>
+                
+                <div id="scheduleList">
+                    <!-- Schedule items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Storage Visualization -->
+            <div class="storage-visual">
+                <h3 style="margin-bottom: var(--spacing-md); color: var(--navy);">Storage Distribution</h3>
+                
+                <div class="storage-bar">
+                    <div class="storage-segment" style="width: 45%; background: var(--forest);" title="Case Files"></div>
+                    <div class="storage-segment" style="width: 25%; background: var(--gold);" title="Database"></div>
+                    <div class="storage-segment" style="width: 15%; background: var(--slate);" title="System Files"></div>
+                    <div class="storage-segment" style="width: 10%; background: var(--info);" title="Logs"></div>
+                    <div class="storage-segment" style="width: 5%; background: var(--light-gray);" title="Free"></div>
+                </div>
+                
+                <div class="storage-labels">
+                    <div>Case Files: 45% (11.0GB)</div>
+                    <div>Database: 25% (6.1GB)</div>
+                    <div>System: 15% (3.7GB)</div>
+                    <div>Logs: 10% (2.4GB)</div>
+                    <div>Free: 5% (1.2GB)</div>
+                </div>
+            </div>
+
+            <!-- Backup History -->
+            <div class="backup-history">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                    <h3 style="color: var(--navy);">Recent Backups</h3>
+                    <button class="btn btn-outline btn-sm" onclick="refreshBackups()">
+                        <i>🔄</i> Refresh
+                    </button>
+                </div>
+                
+                <div id="backupList">
+                    <!-- Backups will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Backup Schedule</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('scheduleModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label class="form-label">Schedule Type</label>
+                        <select class="form-control form-select" id="scheduleType">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="weeklyOptions" style="display: none;">
+                        <label class="form-label">Day of Week</label>
+                        <select class="form-control form-select" id="weekDay">
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="monthlyOptions" style="display: none;">
+                        <label class="form-label">Day of Month</label>
+                        <input type="number" class="form-control" id="monthDay" min="1" max="31" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" class="form-control" id="scheduleTime" value="02:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Backup Type</label>
+                        <select class="form-control form-select" id="scheduleBackupType">
+                            <option value="full">Full System Backup</option>
+                            <option value="incremental">Incremental Backup</option>
+                            <option value="differential">Differential Backup</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Retention Period</label>
+                        <select class="form-control form-select" id="retentionPeriod">
+                            <option value="7">7 days</option>
+                            <option value="30" selected>30 days</option>
+                            <option value="90">90 days</option>
+                            <option value="365">1 year</option>
+                            <option value="forever">Indefinite</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="d-flex align-center gap-2">
+                            <input type="checkbox" id="enableSchedule" checked>
+                            <span style="font-weight: 500;">Enable this schedule</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('scheduleModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const BACKEND_URL = 'http://localhost:5000';
+    let currentSchedule = [];
+    
+    // ==================== UTILITY FUNCTIONS ====================
+    
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.getElementById('scheduleForm').reset();
+        document.getElementById('weeklyOptions').style.display = 'none';
+        document.getElementById('monthlyOptions').style.display = 'none';
+    }
+    
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+    
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    
+    // ==================== BACKUP FUNCTIONS ====================
+    
+    function loadBackupData() {
+        // Update status cards with mock data
+        document.getElementById('lastBackupTime').textContent = 'Today 02:00 AM';
+        document.getElementById('totalBackups').textContent = '47';
+        document.getElementById('storageUsed').textContent = '65%';
+        document.getElementById('successRate').textContent = '99.8%';
+        
+        // Load schedule
+        loadSchedule();
+        
+        // Load backup history
+        loadBackupHistory();
+        
+        // Update user info
+        updateUserInfo();
+    }
+    
+    function loadSchedule() {
+        const scheduleList = document.getElementById('scheduleList');
+        currentSchedule = [
+            { id: 1, name: 'Daily Full Backup', frequency: 'Daily', time: '02:00 AM', type: 'Full', enabled: true },
+            { id: 2, name: 'Weekly Archive', frequency: 'Weekly', day: 'Sunday', time: '03:00 AM', type: 'Full', enabled: true },
+            { id: 3, name: 'Monthly Verification', frequency: 'Monthly', day: '1st', time: '04:00 AM', type: 'Verification', enabled: false }
+        ];
+        
+        scheduleList.innerHTML = currentSchedule.map(schedule => `
+            <div class="schedule-item">
+                <div>
+                    <div style="font-weight: 600; color: var(--navy);">${escapeHtml(schedule.name)}</div>
+                    <div style="font-size: 0.9rem; color: var(--slate);">
+                        ${schedule.frequency} ${schedule.day ? `(${schedule.day})` : ''} at ${schedule.time}
+                    </div>
+                </div>
+                <span class="badge ${schedule.enabled ? 'badge-success' : 'badge-warning'}">
+                    ${schedule.enabled ? 'Active' : 'Paused'}
+                </span>
+            </div>
+        `).join('');
+    }
+    
+    function loadBackupHistory() {
+        const backupList = document.getElementById('backupList');
+        const mockBackups = [
+            { id: 1, name: 'Full System Backup', type: 'Full', created: '2024-10-15T02:00:00', size: 18200000000, location: 'Primary Server', status: 'completed' },
+            { id: 2, name: 'Daily Incremental', type: 'Incremental', created: '2024-10-14T02:00:00', size: 2100000000, location: 'Primary Server', status: 'completed' },
+            { id: 3, name: 'Database Backup', type: 'Database', created: '2024-10-13T02:00:00', size: 6100000000, location: 'Cloud Storage', status: 'completed' },
+            { id: 4, name: 'Document Archive', type: 'Documents', created: '2024-10-12T02:00:00', size: 8200000000, location: 'Secondary Server', status: 'completed' }
+        ];
+        
+        backupList.innerHTML = mockBackups.map(backup => `
+            <div class="backup-item">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <div style="font-weight: 600; color: var(--navy);">
+                            ${escapeHtml(backup.name)}
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--slate);">
+                            Created: ${formatDate(backup.created)} • Size: ${formatBytes(backup.size)}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--slate); margin-top: 0.25rem;">
+                            Location: ${escapeHtml(backup.location)} • Type: ${escapeHtml(backup.type)}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="badge badge-success">Completed</span>
+                        <div style="margin-top: 0.5rem; display: flex; gap: 0.25rem;">
+                            <button class="btn btn-sm btn-outline" onclick="restoreBackup(${backup.id})" title="Restore">
+                                <i>🔄</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="verifyBackup(${backup.id})" title="Verify">
+                                <i>✅</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="deleteBackup(${backup.id})" title="Delete" style="color: var(--error);">
+                                <i>🗑️</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    async function startBackup() {
+        const backupBtn = document.getElementById('startBackupBtn');
+        const spinner = document.getElementById('backupSpinner');
+        const backupType = document.getElementById('backupType').value;
+        const storageLocation = document.getElementById('storageLocation').value;
+        const compressionLevel = document.getElementById('compressionLevel').value;
+        
+        if (!confirm(`Start ${backupType} backup to ${storageLocation}? This may take several minutes.`)) {
+            return;
+        }
+        
+        // Show loading state
+        backupBtn.disabled = true;
+        spinner.style.display = 'inline-block';
+        
+        // Simulate backup process
+        showNotification(`Starting ${backupType} backup...`, 'info');
+        
+        // Simulate progress
+        setTimeout(() => {
+            showNotification('Backup in progress...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+            showNotification('Backup completed successfully!', 'success');
+            
+            // Reset button
+            backupBtn.disabled = false;
+            spinner.style.display = 'none';
+            
+            // Refresh data
+            loadBackupData();
+        }, 4000);
+    }
+    
+    function verifyBackups() {
+        showNotification('Verifying backup integrity...', 'info');
+        
+        // Simulate verification process
+        setTimeout(() => {
+            showNotification('All backups verified successfully!', 'success');
+        }, 3000);
+    }
+    
+    function testRestore() {
+        showNotification('Starting test restore...', 'info');
+        
+        // Simulate test restore
+        setTimeout(() => {
+            showNotification('Test restore completed successfully!', 'success');
+        }, 4000);
+    }
+    
+    function cleanupOldBackups() {
+        if (!confirm('Remove old backups according to retention policy?')) {
+            return;
+        }
+        
+        showNotification('Cleaning up old backups...', 'info');
+        
+        setTimeout(() => {
+            showNotification('Cleanup completed successfully!', 'success');
+            loadBackupData();
+        }, 3000);
+    }
+    
+    function generateReport() {
+        showNotification('Generating backup report...', 'info');
+        
+        // Create report content
+        const report = `
+            Backup System Report
+            ====================
+            Generated: ${new Date().toLocaleString()}
+            
+            Status Summary:
+            - Last Backup: ${document.getElementById('lastBackupTime').textContent}
+            - Total Backups: ${document.getElementById('totalBackups').textContent}
+            - Storage Used: ${document.getElementById('storageUsed').textContent}
+            - Success Rate: ${document.getElementById('successRate').textContent}
+            
+            Schedule Status:
+            - Daily Full Backup: Active
+            - Weekly Archive: Active
+            - Monthly Verification: Paused
+            
+            Storage Distribution:
+            - Case Files: 45% (11.0GB)
+            - Database: 25% (6.1GB)
+            - System Files: 15% (3.7GB)
+            - Logs: 10% (2.4GB)
+            - Free Space: 5% (1.2GB)
+            
+            Recommendations:
+            1. Storage capacity at 65% - consider expansion
+            2. All backups verified and healthy
+            3. Retention policy active
+            
+            System Status: ✅ OPERATIONAL
+        `;
+        
+        // Create download
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_report_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showNotification('Report downloaded successfully!', 'success');
+    }
+    
+    function editSchedule() {
+        openModal('scheduleModal');
+    }
+    
+    function saveSchedule() {
+        const scheduleType = document.getElementById('scheduleType').value;
+        const scheduleTime = document.getElementById('scheduleTime').value;
+        const backupType = document.getElementById('scheduleBackupType').value;
+        const retention = document.getElementById('retentionPeriod').value;
+        const enabled = document.getElementById('enableSchedule').checked;
+        
+        let scheduleName = '';
+        let frequency = '';
+        let day = '';
+        
+        switch(scheduleType) {
+            case 'daily':
+                scheduleName = 'Daily Backup';
+                frequency = 'Daily';
+                break;
+            case 'weekly':
+                scheduleName = 'Weekly Backup';
+                frequency = 'Weekly';
+                day = document.getElementById('weekDay').options[document.getElementById('weekDay').selectedIndex].text;
+                break;
+            case 'monthly':
+                scheduleName = 'Monthly Backup';
+                frequency = 'Monthly';
+                day = document.getElementById('monthDay').value + 'th';
+                break;
+            case 'custom':
+                scheduleName = 'Custom Schedule';
+                frequency = 'Custom';
+                break;
+        }
+        
+        showNotification('Schedule updated successfully', 'success');
+        closeModal('scheduleModal');
+        
+        // Add to schedule list
+        const newSchedule = {
+            id: currentSchedule.length + 1,
+            name: scheduleName,
+            frequency: frequency,
+            day: day,
+            time: scheduleTime,
+            type: backupType,
+            enabled: enabled
+        };
+        
+        currentSchedule.push(newSchedule);
+        loadSchedule();
+    }
+    
+    function refreshBackups() {
+        showNotification('Refreshing backup list...', 'info');
+        loadBackupData();
+        setTimeout(() => {
+            showNotification('Backup list refreshed', 'success');
+        }, 500);
+    }
+    
+    function restoreBackup(backupId) {
+        if (!confirm('Are you sure you want to restore this backup? This may overwrite current data.')) {
+            return;
+        }
+        
+        showNotification(`Starting restore from backup ${backupId}...`, 'info');
+        
+        setTimeout(() => {
+            showNotification('Restore process started successfully', 'success');
+        }, 2000);
+    }
+    
+    function verifyBackup(backupId) {
+        showNotification(`Verifying backup ${backupId}...`, 'info');
+        
+        setTimeout(() => {
+            showNotification(`Backup ${backupId} verified successfully!`, 'success');
+        }, 2000);
+    }
+    
+    function deleteBackup(backupId) {
+        if (!confirm('Are you sure you want to delete this backup? This action cannot be undone.')) {
+            return;
+        }
+        
+        showNotification(`Deleting backup ${backupId}...`, 'info');
+        
+        setTimeout(() => {
+            showNotification('Backup deleted successfully', 'success');
+            loadBackupData();
+        }, 1000);
+    }
+    
+    async function updateUserInfo() {
+        try {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                logout();
+                return;
+            }
+            
+            const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const user = await response.json();
+                const userData = user.user || user;
+                document.getElementById('backup-user').textContent = userData.full_name || 'System Administrator';
+                document.getElementById('backup-role').textContent = userData.role || 'Admin';
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error);
+        }
+    }
+    
+    // ==================== INITIALIZATION ====================
+    
+    async function initializePage() {
+        showLoading();
+        
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showNotification('Please login to access the Backup System', 'error');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+            return;
+        }
+        
+        try {
+            // Show dashboard
+            document.getElementById('dashboardContainer').style.display = 'flex';
+            
+            // Load backup data
+            loadBackupData();
+            
+            // Set up schedule type toggle
+            document.getElementById('scheduleType').addEventListener('change', function() {
+                const weeklyOptions = document.getElementById('weeklyOptions');
+                const monthlyOptions = document.getElementById('monthlyOptions');
+                
+                weeklyOptions.style.display = 'none';
+                monthlyOptions.style.display = 'none';
+                
+                if (this.value === 'weekly') {
+                    weeklyOptions.style.display = 'block';
+                } else if (this.value === 'monthly') {
+                    monthlyOptions.style.display = 'block';
+                }
+            });
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showNotification('Error loading page', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

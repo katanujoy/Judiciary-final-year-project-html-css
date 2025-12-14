@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           LAW FIRM AESTHETIC - SUITS STYLE
+        =========================================== */
+
+        :root {
+            /* Colors - Professional Legal Palette */
+            --navy: #0A1F44;
+            --dark-navy: #07162D;
+            --gold: #D4AF37;
+            --light-gold: #F4E4B6;
+            --charcoal: #2C3E50;
+            --slate: #4A6278;
+            --light-gray: #F8F9FA;
+            --cream: #FAF5E9;
+            --forest: #2E8B57;
+            --warning: #D97706;
+            --info: #0891b2;
+            --error: #dc2626;
+            
+            /* Typography - Classy Legal Fonts */
+            --font-heading: 'Playfair Display', 'Times New Roman', serif;
+            --font-body: 'Merriweather', 'Georgia', serif;
+            --font-ui: 'Lato', 'Arial', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* Shadows & Effects */
+            --shadow-sm: 0 2px 4px rgba(10, 31, 68, 0.08);
+            --shadow: 0 4px 12px rgba(10, 31, 68, 0.12);
+            --shadow-lg: 0 8px 24px rgba(10, 31, 68, 0.16);
+            
+            /* Borders */
+            --border: 1px solid #E1E5EB;
+            --border-radius: 6px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--charcoal);
+            background-color: var(--cream);
+            line-height: 1.6;
+        }
+        
+        /* ===========================================
+           DASHBOARD LAYOUT
+        =========================================== */
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--navy);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            background: var(--dark-navy);
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+            border: none;
+        }
+        
+        .sidebar-header p {
+            color: var(--light-gold);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .nav-item {
+            margin: 4px var(--spacing-md);
+        }
+        
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active a {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--gold);
+        }
+        
+        .content-header h2 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+            border: none;
+            font-family: var(--font-heading);
+        }
+        
+        .content-header .text-light {
+            color: var(--slate);
+            font-size: 0.95rem;
+            font-style: italic;
+            font-family: var(--font-body);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           BUTTONS & FORMS
+        =========================================== */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+        }
+        
+        .btn-primary:hover {
+            background: #C19A2C;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-ui);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #E1E5EB;
+            border-radius: var(--border-radius);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--charcoal);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230A1F44' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-ui);
+        }
+        
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        /* ===========================================
+           FILE UPLOAD SPECIFIC STYLES
+        =========================================== */
+        
+        .upload-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        
+        .card-header h3 {
+            color: var(--navy);
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+        }
+        
+        .card-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .upload-form {
+            max-width: 800px;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--gold);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(212, 175, 55, 0.05);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .upload-area:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #C19A2C;
+        }
+        
+        .upload-area.dragover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--navy);
+            transform: scale(1.01);
+        }
+        
+        .upload-placeholder {
+            color: var(--slate);
+        }
+        
+        .upload-placeholder i {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+        
+        .upload-progress {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--gold);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .file-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm);
+            background: white;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-xs);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-gold);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-ui);
+        }
+        
+        .table th {
+            background: var(--navy);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr:hover {
+            background: #F8F9FA;
+        }
+        
+        /* Batch Upload */
+        .batch-upload {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--dark-navy) 100%);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .upload-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .template-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .template-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* ===========================================
+           NOTIFICATION & MODAL
+        =========================================== */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            color: white;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .notification-success {
+            background: var(--forest);
+            border-left-color: #065F46;
+        }
+        
+        .notification-error {
+            background: var(--error);
+            border-left-color: #7F1D1D;
+        }
+        
+        .notification-info {
+            background: var(--info);
+            border-left-color: #0E7490;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            color: var(--navy);
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+        }
+        
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .modal-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           UTILITY CLASSES
+        =========================================== */
+        
+        .mt-4 { margin-top: var(--spacing-lg); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .d-flex { display: flex; }
+        .gap-2 { gap: var(--spacing-sm); }
+        .p-3 { padding: var(--spacing-md); }
+        .text-center { text-align: center; }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 31, 68, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        .loading-text {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--spacing-md);
+            }
+            
+            .upload-templates {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+            
+            .modal-content {
+                margin: var(--spacing-sm);
+                max-height: 95vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .content-header {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+            
+            .user-menu {
+                align-self: flex-start;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .card-body {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading File Upload System...</div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>⚖️ Kenya Judiciary</h3>
+                <p>Digital Archives System</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="dashboard.html"><i>📊</i> Judicial Dashboard</a></li>
+                <li class="nav-item"><a href="cases.html"><i>📁</i> Case Registry</a></li>
+                <li class="nav-item active"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Legal Search</a></li>
+                <li class="nav-item"><a href="backup.html"><i>💾</i> System Backups</a></li>
+                <li class="nav-item"><a href="users.html"><i>👥</i> User Registry</a></li>
+                <li class="nav-item"><a href="#" onclick="logout()"><i>🚪</i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>Document Upload</h2>
+                    <p class="text-light">Digitize and archive judicial documents</p>
+                </div>
+                <div class="user-menu">
+                    <span id="upload-user">--</span>
+                    <div class="badge badge-success" id="upload-role">--</div>
+                </div>
+            </header>
+
+            <!-- Upload Interface -->
+            <div class="upload-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Upload Judicial Documents</h3>
+                        <p style="color: var(--slate); font-size: 0.95rem;">Select case and upload associated files</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadForm" class="upload-form">
+                            <div class="form-group-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                                <div class="form-group">
+                                    <label class="form-label">Select Case*</label>
+                                    <select class="form-control form-select" id="caseSelect" required>
+                                        <option value="">Choose a case...</option>
+                                        <option value="CR-2024-001">CR-2024-001 - State vs. John Doe</option>
+                                        <option value="CV-2024-045">CV-2024-045 - Land Dispute</option>
+                                        <option value="MC-2024-123">MC-2024-123 - Commercial Arbitration</option>
+                                        <option value="new">+ Register New Case</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Document Type*</label>
+                                    <select class="form-control form-select" id="docType" required>
+                                        <option value="">Select document type</option>
+                                        <option>Court Ruling</option>
+                                        <option>Evidence Document</option>
+                                        <option>Witness Statement</option>
+                                        <option>Affidavit</option>
+                                        <option>Pleadings</option>
+                                        <option>Exhibits</option>
+                                        <option>Other Judicial Document</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Upload Files*</label>
+                                <div class="upload-area" id="uploadArea">
+                                    <div class="upload-placeholder">
+                                        <i>📁</i>
+                                        <h4 style="color: var(--navy); margin: var(--spacing-xs) 0;">Drag & Drop Files Here</h4>
+                                        <p style="color: var(--slate);">or click to browse files</p>
+                                        <p class="text-light" style="font-size: 0.9rem; margin-top: 0.5rem;">
+                                            Supports: PDF, JPG, PNG, DOCX, TXT (Max 50MB per file)
+                                        </p>
+                                        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.docx,.txt" style="display: none;">
+                                    </div>
+                                </div>
+                                <div class="file-list" id="fileList">
+                                    <!-- Files will appear here -->
+                                </div>
+                            </div>
+
+                            <div class="upload-progress" id="progressContainer" style="display: none;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+                                    <span style="font-weight: 600; color: var(--navy);">Upload Progress</span>
+                                    <span id="progressPercent" style="font-weight: 600; color: var(--navy);">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div id="uploadStatus" style="font-size: 0.9rem; color: var(--slate); margin-top: var(--spacing-sm);">
+                                    Preparing upload...
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Document Description</label>
+                                <textarea class="form-control" id="description" rows="3" 
+                                          placeholder="Provide description for better searchability and indexing..."></textarea>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                                <div class="form-group">
+                                    <label class="d-flex align-center gap-2">
+                                        <input type="checkbox" id="enableOCR" checked>
+                                        <span style="font-weight: 500;">Enable OCR Processing</span>
+                                    </label>
+                                    <small class="text-light" style="display: block; margin-top: 4px; font-size: 0.85rem;">
+                                        Optical Character Recognition for scanned documents
+                                    </small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="d-flex align-center gap-2">
+                                        <input type="checkbox" id="autoIndex" checked>
+                                        <span style="font-weight: 500;">Auto-index for Search</span>
+                                    </label>
+                                    <small class="text-light" style="display: block; margin-top: 4px; font-size: 0.85rem;">
+                                        Automatically index document content
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="form-actions" style="display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-xl);">
+                                <button type="button" class="btn btn-outline" onclick="clearUploadForm()" style="flex: 1;">
+                                    <i>🗑️</i> Clear Form
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="uploadBtn" style="flex: 2;">
+                                    <span class="spinner" id="uploadSpinner" style="display: none; margin-right: 8px;"></span>
+                                    <i>📤</i> Upload Documents
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Recent Uploads -->
+                <div class="card" style="margin-top: var(--spacing-lg);">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Recent Uploads</h3>
+                        <button class="btn btn-sm btn-outline" onclick="refreshUploads()">
+                            <i>🔄</i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table" id="uploadsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Document</th>
+                                        <th>Case</th>
+                                        <th>Type</th>
+                                        <th>Uploaded</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="uploadsTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--slate); font-style: italic;">
+                                            Loading recent uploads...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch Upload Section -->
+                <div class="batch-upload">
+                    <h3 style="color: white; margin-bottom: var(--spacing-sm);">Batch Upload Templates</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem;">Use templates for standardized document uploads</p>
+                    
+                    <div class="upload-templates">
+                        <div class="template-card" onclick="useTemplate('hearing')">
+                            <i style="font-size: 1.5rem; margin-bottom: 0.5rem;">📅</i>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">Hearing Bundle</div>
+                            <small style="opacity: 0.8;">Court documents package</small>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('evidence')">
+                            <i style="font-size: 1.5rem; margin-bottom: 0.5rem;">📷</i>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">Evidence Package</div>
+                            <small style="opacity: 0.8;">Photos, documents, exhibits</small>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('witness')">
+                            <i style="font-size: 1.5rem; margin-bottom: 0.5rem;">👤</i>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">Witness Statements</div>
+                            <small style="opacity: 0.8;">Multiple witness files</small>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('judgment')">
+                            <i style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚖️</i>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">Judgment Package</div>
+                            <small style="opacity: 0.8;">Ruling and related docs</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    const BACKEND_URL = 'http://localhost:5000';
+    let uploadQueue = [];
+    
+    // ==================== UTILITY FUNCTIONS ====================
+    
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+    
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+    
+    function getAuthHeaders() {
+        const token = localStorage.getItem('access_token');
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+    }
+    
+    // ==================== UPLOAD FUNCTIONS ====================
+    
+    function initializeUploadArea() {
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        
+        // Click to browse
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileList();
+            }
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', updateFileList);
+    }
+    
+    function updateFileList() {
+        const fileList = document.getElementById('fileList');
+        const files = document.getElementById('fileInput').files;
+        
+        fileList.innerHTML = '';
+        
+        if (files.length === 0) {
+            return;
+        }
+        
+        Array.from(files).forEach(file => {
+            const item = document.createElement('div');
+            item.className = 'file-list-item';
+            item.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">
+                        ${getFileIcon(file.name)}
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: var(--navy);">${escapeHtml(file.name)}</div>
+                        <div style="font-size: 0.8rem; color: var(--slate);">
+                            ${formatFileSize(file.size)} • ${file.type || 'Unknown type'}
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="removeFile('${escapeHtml(file.name)}')" type="button">
+                    <i>🗑️</i>
+                </button>
+            `;
+            fileList.appendChild(item);
+        });
+        
+        showNotification(`${files.length} file(s) selected`, 'info');
+    }
+    
+    function getFileIcon(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        if (['pdf'].includes(ext)) return '📄';
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return '🖼️';
+        if (['doc', 'docx'].includes(ext)) return '📝';
+        if (['txt'].includes(ext)) return '📋';
+        return '📁';
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    function removeFile(filename) {
+        const fileInput = document.getElementById('fileInput');
+        const dt = new DataTransfer();
+        
+        // Remove file from input
+        Array.from(fileInput.files).forEach(file => {
+            if (file.name !== filename) {
+                dt.items.add(file);
+            }
+        });
+        
+        fileInput.files = dt.files;
+        
+        // Remove from UI
+        const items = document.querySelectorAll('.file-list-item');
+        items.forEach(item => {
+            if (item.textContent.includes(filename)) {
+                item.remove();
+            }
+        });
+        
+        showNotification(`Removed: ${filename}`, 'info');
+    }
+    
+    async function handleUpload(event) {
+        event.preventDefault();
+        
+        // Validate form
+        const caseSelect = document.getElementById('caseSelect');
+        const docType = document.getElementById('docType');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const spinner = document.getElementById('uploadSpinner');
+        const progressContainer = document.getElementById('progressContainer');
+        
+        if (!caseSelect.value || caseSelect.value === '') {
+            showNotification('Please select a case', 'error');
+            return;
+        }
+        
+        if (!docType.value) {
+            showNotification('Please select document type', 'error');
+            return;
+        }
+        
+        if (fileInput.files.length === 0) {
+            showNotification('Please select at least one file', 'error');
+            return;
+        }
+        
+        // Show progress container
+        progressContainer.style.display = 'block';
+        
+        // Disable upload button
+        uploadBtn.disabled = true;
+        spinner.style.display = 'inline-block';
+        uploadBtn.innerHTML = 'Uploading...';
+        
+        // Process each file
+        const files = Array.from(fileInput.files);
+        let uploadedCount = 0;
+        let totalSize = files.reduce((sum, file) => sum + file.size, 0);
+        
+        // Simulate upload process
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const progress = ((i + 1) / files.length) * 100;
+            
+            // Update progress
+            updateProgress(progress, `Uploading: ${file.name}`);
+            
+            // Simulate upload delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            uploadedCount++;
+            
+            if (i === files.length - 1) {
+                updateProgress(100, 'Upload complete!');
+            }
+        }
+        
+        // Show success message
+        showNotification(`${uploadedCount} file(s) uploaded successfully!`, 'success');
+        
+        // Reset UI
+        setTimeout(() => {
+            uploadBtn.disabled = false;
+            spinner.style.display = 'none';
+            uploadBtn.innerHTML = '<i>📤</i> Upload Documents';
+            progressContainer.style.display = 'none';
+            
+            // Clear form and reload uploads
+            clearUploadForm();
+            loadRecentUploads();
+        }, 1000);
+    }
+    
+    function updateProgress(percent, message) {
+        document.getElementById('progressPercent').textContent = `${Math.round(percent)}%`;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+        document.getElementById('uploadStatus').textContent = message;
+    }
+    
+    function clearUploadForm() {
+        document.getElementById('uploadForm').reset();
+        document.getElementById('fileList').innerHTML = '';
+        document.getElementById('fileInput').value = '';
+        document.getElementById('progressContainer').style.display = 'none';
+        showNotification('Upload form cleared', 'info');
+    }
+    
+    async function loadRecentUploads() {
+        try {
+            // Mock data for demonstration
+            const mockUploads = [
+                { id: 1, filename: 'witness_statement_1.pdf', case: 'CR-2024-001', type: 'Witness Statement', uploaded: 'Today 10:30 AM', status: 'Processed' },
+                { id: 2, filename: 'evidence_photo_1.jpg', case: 'CR-2024-001', type: 'Evidence', uploaded: 'Today 10:25 AM', status: 'Processed' },
+                { id: 3, filename: 'court_ruling.pdf', case: 'CV-2024-045', type: 'Court Ruling', uploaded: 'Yesterday 3:45 PM', status: 'Indexed' },
+                { id: 4, filename: 'affidavit_2.pdf', case: 'MC-2024-123', type: 'Affidavit', uploaded: 'Yesterday 2:15 PM', status: 'OCR Processing' }
+            ];
+            
+            const tbody = document.getElementById('uploadsTableBody');
+            tbody.innerHTML = mockUploads.map(upload => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="color: var(--gold);">${getFileIcon(upload.filename)}</div>
+                            <div style="font-weight: 500;">${escapeHtml(upload.filename)}</div>
+                        </div>
+                    </td>
+                    <td><strong style="color: var(--navy);">${escapeHtml(upload.case)}</strong></td>
+                    <td>${escapeHtml(upload.type)}</td>
+                    <td style="color: var(--slate);">${escapeHtml(upload.uploaded)}</td>
+                    <td>
+                        <span class="badge ${upload.status === 'Processed' ? 'badge-success' : 
+                                             upload.status === 'Indexed' ? 'badge-info' : 'badge-warning'}">
+                            ${escapeHtml(upload.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <button class="btn btn-sm btn-outline" onclick="viewDocument(${upload.id})" title="View">
+                                <i>👁️</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="downloadDocument(${upload.id})" title="Download">
+                                <i>📥</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="deleteDocument(${upload.id})" title="Delete" style="color: var(--error);">
+                                <i>🗑️</i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Error loading uploads:', error);
+            showNotification('Error loading recent uploads', 'error');
+        }
+    }
+    
+    function refreshUploads() {
+        showNotification('Refreshing uploads...', 'info');
+        loadRecentUploads();
+        setTimeout(() => {
+            showNotification('Uploads refreshed', 'success');
+        }, 500);
+    }
+    
+    function useTemplate(template) {
+        const templateNames = {
+            hearing: 'Hearing Bundle',
+            evidence: 'Evidence Package',
+            witness: 'Witness Statements',
+            judgment: 'Judgment Package'
+        };
+        
+        const descriptions = {
+            hearing: 'Hearing bundle containing court documents, motions, and evidence lists',
+            evidence: 'Evidence package containing photographic and documentary evidence',
+            witness: 'Witness statements and related affidavits',
+            judgment: 'Judgment package containing ruling and related legal documents'
+        };
+        
+        showNotification(`Loading ${templateNames[template]} template...`, 'info');
+        
+        // Set form values based on template
+        document.getElementById('docType').value = template === 'evidence' ? 'Evidence Document' : 'Court Ruling';
+        document.getElementById('description').value = descriptions[template];
+        
+        // Auto-select appropriate case
+        if (template === 'hearing' || template === 'evidence') {
+            document.getElementById('caseSelect').value = 'CR-2024-001';
+        }
+        
+        setTimeout(() => {
+            showNotification(`${templateNames[template]} template loaded`, 'success');
+        }, 300);
+    }
+    
+    function viewDocument(docId) {
+        showNotification(`Viewing document ID: ${docId}`, 'info');
+        // In a real app, this would open a document viewer
+        alert(`Document Viewer\n\nDocument ID: ${docId}\nThis would open a document viewer in a real application.`);
+    }
+    
+    function downloadDocument(docId) {
+        showNotification(`Downloading document ID: ${docId}`, 'success');
+        // In a real app, this would trigger a download
+        alert(`Download Started\n\nDocument ID: ${docId}\nDownload would start in a real application.`);
+    }
+    
+    function deleteDocument(docId) {
+        if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+            showNotification(`Deleting document ID: ${docId}`, 'info');
+            // In a real app, this would call DELETE API
+            setTimeout(() => {
+                showNotification('Document deleted successfully', 'success');
+                refreshUploads();
+            }, 1000);
+        }
+    }
+    
+    async function updateUserInfo() {
+        try {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                logout();
+                return;
+            }
+            
+            const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const user = await response.json();
+                const userData = user.user || user;
+                document.getElementById('upload-user').textContent = userData.full_name || 'Your Honor';
+                document.getElementById('upload-role').textContent = userData.role || 'User';
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error);
+        }
+    }
+    
+    // ==================== INITIALIZATION ====================
+    
+    async function initializePage() {
+        showLoading();
+        
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showNotification('Please login to access the File Upload', 'error');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+            return;
+        }
+        
+        try {
+            // Show dashboard
+            document.getElementById('dashboardContainer').style.display = 'flex';
+            
+            // Initialize upload area
+            initializeUploadArea();
+            
+            // Load user info
+            await updateUserInfo();
+            
+            // Load recent uploads
+            loadRecentUploads();
+            
+            // Set up form submission
+            document.getElementById('uploadForm').addEventListener('submit', handleUpload);
+            
+            // Case select change
+            document.getElementById('caseSelect').addEventListener('change', function() {
+                if (this.value === 'new') {
+                    showNotification('Redirecting to case registry...', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'cases.html';
+                    }, 1000);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showNotification('Error loading page', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0d1b3e;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --black: #1a1a1a;
+            --gray-light: #f5f7fa;
+            --gray: #64748b;
+            --gray-dark: #334155;
+            --primary: #2563eb;
+            --error: #dc2626;
+            --success: #059669;
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --card-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--gray-light) 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .login-card {
+            background: var(--white);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            background: var(--navy);
+            padding: 40px 30px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 12px;
+            color: var(--gold);
+        }
+        
+        .logo-text h1 {
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .logo-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        
+        .card-body {
+            padding: 40px 30px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(13, 27, 62, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: var(--gray);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+        
+        .btn-login:hover {
+            background: #0c1735;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 27, 62, 0.2);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .btn-login:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .card-footer {
+            padding: 25px 30px 30px;
+            background: var(--gray-light);
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .register-link {
+            color: var(--navy);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .register-link:hover {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+        
+        .register-link::after {
+            content: '→';
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--error);
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            color: var(--navy);
+            font-weight: 500;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .forgot-link {
+            display: block;
+            text-align: right;
+            margin-top: 8px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        
+        .forgot-link:hover {
+            color: var(--navy);
+            text-decoration: underline;
+        }
+        
+        .demo-credentials {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 25px;
+            font-size: 0.85rem;
+        }
+        
+        .demo-credentials h4 {
+            color: var(--navy);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .demo-credentials p {
+            color: var(--gray-dark);
+            margin-bottom: 5px;
+        }
+        
+        .demo-credentials code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--navy);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .demo-credentials code:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                max-width: 100%;
+            }
+            
+            .card-header,
+            .card-body,
+            .card-footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <div class="logo">
+                    <div class="logo-icon">⚖️</div>
+                    <div class="logo-text">
+                        <h1>Judiciary Archives</h1>
+                        <p>Case Management System</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="error-message" id="errorMessage"></div>
+                <div class="loading" id="loading">Authenticating...</div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="user@judiciary.go.ke" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        <a href="#" class="forgot-link" onclick="forgotPassword()">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        Sign In to System
+                    </button>
+                </form>
+                
+                <div class="demo-credentials">
+                    <h4>Demo Accounts</h4>
+                    <p><strong>Judge:</strong> <code>judge@judiciary.go.ke</code> / <code>judge123</code></p>
+                    <p><strong>Clerk:</strong> <code>clerk@judiciary.go.ke</code> / <code>clerk123</code></p>
+                    <p><strong>Admin:</strong> <code>admin@judiciary.go.ke</code> / <code>admin123</code></p>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <p>Don't have an account? <a href="register.html" class="register-link">Request Access</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:5000';
+        
+        // Show error message
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+        
+        // Hide error message
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        // Forgot password function
+        function forgotPassword() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                showError('Please enter your email address to reset password');
+                return;
+            }
+            
+            if (confirm(`Send password reset instructions to ${email}?`)) {
+                showError('Password reset feature coming soon. Please contact system administrator.');
+            }
+        }
+        
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loading = document.getElementById('loading');
+            
+            // Reset error state
+            hideError();
+            
+            // Show loading state
+            loading.style.display = 'block';
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: email.trim(),
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Store tokens
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                    localStorage.setItem('user_role', data.role);
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    throw new Error(data.error || 'Invalid email or password');
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'Network error. Please check your connection.');
+                
+            } finally {
+                // Reset button state
+                loading.style.display = 'none';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In to System';
+            }
+        });
+        
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+        
+        // Auto-fill demo account on click
+        document.querySelectorAll('.demo-credentials code').forEach(code => {
+            code.addEventListener('click', (e) => {
+                const text = e.target.textContent.trim();
+                const [emailPart] = text.split(' / ');
+                if (emailPart.includes('@')) {
+                    document.getElementById('email').value = emailPart;
+                    
+                    // Set default password based on role
+                    if (emailPart.includes('judge')) {
+                        document.getElementById('password').value = 'judge123';
+                    } else if (emailPart.includes('clerk')) {
+                        document.getElementById('password').value = 'clerk123';
+                    } else if (emailPart.includes('admin')) {
+                        document.getElementById('password').value = 'admin123';
+                    }
+                }
+            });
+        });
+        
+        // Enter key to submit
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

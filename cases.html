@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Registry - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           LAW FIRM AESTHETIC - SUITS STYLE
+        =========================================== */
+
+        :root {
+            /* Colors - Professional Legal Palette */
+            --navy: #0A1F44;
+            --dark-navy: #07162D;
+            --gold: #D4AF37;
+            --light-gold: #F4E4B6;
+            --charcoal: #2C3E50;
+            --slate: #4A6278;
+            --light-gray: #F8F9FA;
+            --cream: #FAF5E9;
+            --success: #2E8B57;
+            --warning: #D97706;
+            --info: #0891b2;
+            --error: #dc2626;
+            
+            /* Typography - Classy Legal Fonts */
+            --font-heading: 'Playfair Display', 'Times New Roman', serif;
+            --font-body: 'Merriweather', 'Georgia', serif;
+            --font-ui: 'Lato', 'Arial', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* Shadows & Effects */
+            --shadow-sm: 0 2px 4px rgba(10, 31, 68, 0.08);
+            --shadow: 0 4px 12px rgba(10, 31, 68, 0.12);
+            --shadow-lg: 0 8px 24px rgba(10, 31, 68, 0.16);
+            
+            /* Borders */
+            --border: 1px solid #E1E5EB;
+            --border-radius: 6px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--charcoal);
+            background-color: var(--cream);
+            line-height: 1.6;
+        }
+        
+        /* ===========================================
+           DASHBOARD LAYOUT
+        =========================================== */
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--navy);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            background: var(--dark-navy);
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+            border: none;
+        }
+        
+        .sidebar-header p {
+            color: var(--light-gold);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .nav-item {
+            margin: 4px var(--spacing-md);
+        }
+        
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        
+        .nav-item a:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active a {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--gold);
+        }
+        
+        .content-header h2 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+            border: none;
+            font-family: var(--font-heading);
+        }
+        
+        .content-header .text-light {
+            color: var(--slate);
+            font-size: 0.95rem;
+            font-style: italic;
+            font-family: var(--font-body);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        /* ===========================================
+           BUTTONS & FORMS
+        =========================================== */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+        }
+        
+        .btn-primary:hover {
+            background: #C19A2C;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--gold);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gold);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-ui);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #E1E5EB;
+            border-radius: var(--border-radius);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--charcoal);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230A1F44' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-ui);
+        }
+        
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .badge-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        /* ===========================================
+           CASE REGISTRY SPECIFIC STYLES
+        =========================================== */
+        
+        .case-filters {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .case-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-left: 4px solid var(--gold);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .case-number {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 1.2rem;
+        }
+        
+        .case-title {
+            color: var(--charcoal);
+            font-weight: 600;
+            margin: 0.25rem 0;
+            font-family: var(--font-body);
+        }
+        
+        .case-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+            font-size: 0.9rem;
+            color: var(--slate);
+            flex-wrap: wrap;
+        }
+        
+        .case-meta div {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .case-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        /* Calendar View */
+        .calendar-view {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--light-gray);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: var(--spacing-sm);
+            min-height: 100px;
+            position: relative;
+        }
+        
+        .calendar-day.today {
+            background: #FEFCE8;
+        }
+        
+        .calendar-day-header {
+            background: var(--navy);
+            color: white;
+            padding: var(--spacing-sm);
+            text-align: center;
+            font-weight: 600;
+            font-family: var(--font-ui);
+        }
+        
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-ui);
+        }
+        
+        .hearing-event {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            cursor: pointer;
+            font-family: var(--font-ui);
+            transition: all 0.3s ease;
+        }
+        
+        .hearing-event:hover {
+            background: #C19A2C;
+        }
+        
+        /* ===========================================
+           MODAL STYLES
+        =========================================== */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            color: var(--navy);
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+        }
+        
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .modal-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* ===========================================
+           NOTIFICATION
+        =========================================== */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            color: white;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .notification-success {
+            background: var(--success);
+            border-left-color: #065F46;
+        }
+        
+        .notification-error {
+            background: var(--error);
+            border-left-color: #7F1D1D;
+        }
+        
+        .notification-info {
+            background: var(--info);
+            border-left-color: #0E7490;
+        }
+        
+        /* ===========================================
+           UTILITY CLASSES
+        =========================================== */
+        
+        .mt-4 { margin-top: var(--spacing-lg); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .text-center { text-align: center; }
+        .d-flex { display: flex; }
+        .gap-2 { gap: var(--spacing-sm); }
+        .p-3 { padding: var(--spacing-md); }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 31, 68, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+            }
+            
+            .case-meta {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+            
+            .case-actions {
+                flex-direction: column;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+            
+            .modal-content {
+                margin: var(--spacing-sm);
+                max-height: 95vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: var(--spacing-md);
+            }
+            
+            .case-card {
+                padding: var(--spacing-sm);
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Case Registry...</div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>⚖️ Kenya Judiciary</h3>
+                <p>Digital Archives System</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="dashboard.html"><i>📊</i> Judicial Dashboard</a></li>
+                <li class="nav-item active"><a href="cases.html"><i>📁</i> Case Registry</a></li>
+                <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Legal Search</a></li>
+                <li class="nav-item"><a href="backup.html"><i>💾</i> System Backups</a></li>
+                <li class="nav-item"><a href="users.html"><i>👥</i> User Registry</a></li>
+                <li class="nav-item"><a href="#" onclick="logout()"><i>🚪</i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>Case Registry</h2>
+                    <p class="text-light">Manage judicial cases and proceedings</p>
+                </div>
+                <div class="user-menu">
+                    <button class="btn btn-primary" onclick="openModal('newCaseModal')">
+                        <i>➕</i> Register New Case
+                    </button>
+                </div>
+            </header>
+
+            <!-- Case Filters -->
+            <div class="case-filters">
+                <div class="filter-grid">
+                    <div>
+                        <label class="form-label">Case Type</label>
+                        <select class="form-control form-select" id="filterType">
+                            <option value="">All Types</option>
+                            <option>Criminal</option>
+                            <option>Civil</option>
+                            <option>Commercial</option>
+                            <option>Constitutional</option>
+                            <option>Family</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select class="form-control form-select" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option>Active</option>
+                            <option>Pending</option>
+                            <option>Concluded</option>
+                            <option>Appealed</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Court Station</label>
+                        <select class="form-control form-select" id="filterStation">
+                            <option value="">All Stations</option>
+                            <option>Nairobi High Court</option>
+                            <option>Mombasa Law Courts</option>
+                            <option>Nakuru High Court</option>
+                            <option>Kisumu Law Courts</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Presiding Judge</label>
+                        <select class="form-control form-select" id="filterJudge">
+                            <option value="">All Judges</option>
+                            <option>Justice Katanu</option>
+                            <option>Justice Mwangi</option>
+                            <option>Justice Omondi</option>
+                            <option>Justice Wambua</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <input type="search" class="form-control" placeholder="Search case number, title, parties..." id="caseSearch">
+                    <button class="btn btn-primary" onclick="searchCases()">
+                        <i>🔍</i> Search
+                    </button>
+                    <button class="btn btn-outline" onclick="clearFilters()">
+                        <i>🔄</i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cases Grid -->
+            <div id="casesGrid">
+                <!-- Cases will be loaded here dynamically -->
+            </div>
+
+            <!-- Calendar View -->
+            <div class="calendar-view">
+                <div class="calendar-header">
+                    <h3>Hearing Calendar</h3>
+                    <div>
+                        <button class="btn btn-sm btn-outline" onclick="prevMonth()">← Prev</button>
+                        <span style="margin: 0 var(--spacing-sm); font-weight: 600;" id="currentMonth"></span>
+                        <button class="btn btn-sm btn-outline" onclick="nextMonth()">Next →</button>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar days will be generated by JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Case Modal -->
+    <div class="modal" id="newCaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Register New Case</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('newCaseModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="caseForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Case Number*</label>
+                            <input type="text" class="form-control" id="caseNumber" placeholder="e.g., CR-2024-001" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Case Type*</label>
+                            <select class="form-control form-select" id="caseType" required>
+                                <option value="">Select Type</option>
+                                <option>Criminal</option>
+                                <option>Civil</option>
+                                <option>Commercial</option>
+                                <option>Constitutional</option>
+                                <option>Family</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Case Title*</label>
+                        <input type="text" class="form-control" id="caseTitle" placeholder="Case title and brief description" required>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Plaintiff/Prosecution*</label>
+                            <input type="text" class="form-control" id="plaintiff" placeholder="Name of plaintiff/prosecution" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Defendant/Accused*</label>
+                            <input type="text" class="form-control" id="defendant" placeholder="Name of defendant/accused" required>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Presiding Judge*</label>
+                            <select class="form-control form-select" id="presidingJudge" required>
+                                <option value="">Select Judge</option>
+                                <option>Justice Katanu</option>
+                                <option>Justice Mwangi</option>
+                                <option>Justice Omondi</option>
+                                <option>Justice Wambua</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Court Station*</label>
+                            <select class="form-control form-select" id="courtStation" required>
+                                <option value="">Select Station</option>
+                                <option>Nairobi High Court</option>
+                                <option>Mombasa Law Courts</option>
+                                <option>Nakuru High Court</option>
+                                <option>Kisumu Law Courts</option>
+                                <option>Eldoret High Court</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Case Summary</label>
+                        <textarea class="form-control" id="caseSummary" rows="4" placeholder="Brief summary of the case..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Initial Hearing Date</label>
+                        <input type="date" class="form-control" id="hearingDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('newCaseModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitCase()">Register Case</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const BACKEND_URL = 'http://localhost:5000';
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let casesData = [];
+    
+    // ==================== UTILITY FUNCTIONS ====================
+    
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+    
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.getElementById('caseForm').reset();
+    }
+    
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+    
+    // ==================== CASE MANAGEMENT FUNCTIONS ====================
+    
+    async function loadCases() {
+        try {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                showError('Please login to access cases');
+                return;
+            }
+            
+            showLoading();
+            
+            const response = await fetch(`${BACKEND_URL}/api/cases/cases`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                casesData = Array.isArray(data) ? data : (data.cases || data.data || []);
+                renderCases(casesData);
+            } else {
+                // Use mock data for demonstration
+                casesData = getMockCases();
+                renderCases(casesData);
+            }
+            
+            generateCalendar();
+            
+        } catch (error) {
+            console.error('Error loading cases:', error);
+            casesData = getMockCases();
+            renderCases(casesData);
+            generateCalendar();
+            showNotification('Using demonstration data', 'info');
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    function renderCases(cases) {
+        const casesGrid = document.getElementById('casesGrid');
+        
+        if (!cases || cases.length === 0) {
+            casesGrid.innerHTML = `
+                <div style="text-align: center; padding: var(--spacing-xl); color: var(--slate); font-family: var(--font-body); font-style: italic;">
+                    No cases found. Click "Register New Case" to add your first case.
+                </div>
+            `;
+            return;
+        }
+        
+        casesGrid.innerHTML = cases.map(caseItem => `
+            <div class="case-card" data-case-id="${caseItem.id}">
+                <div class="case-header">
+                    <div>
+                        <div class="case-number">${escapeHtml(caseItem.case_number || 'N/A')}</div>
+                        <div class="case-title">${escapeHtml(caseItem.title || caseItem.case_title || 'Untitled Case')}</div>
+                    </div>
+                    <span class="badge ${getStatusClass(caseItem.status)}">
+                        ${escapeHtml(caseItem.status || 'Pending')}
+                    </span>
+                </div>
+                
+                <div style="color: var(--slate); margin: var(--spacing-sm) 0; font-family: var(--font-body);">
+                    ${escapeHtml(caseItem.summary || caseItem.description || 'No description available.')}
+                </div>
+                
+                <div class="case-meta">
+                    <div><strong>Type:</strong> ${escapeHtml(caseItem.type || caseItem.case_type || 'N/A')}</div>
+                    <div><strong>Judge:</strong> ${escapeHtml(caseItem.judge || caseItem.presiding_judge || 'N/A')}</div>
+                    <div><strong>Station:</strong> ${escapeHtml(caseItem.court_station || caseItem.court || 'N/A')}</div>
+                    <div><strong>Filed:</strong> ${caseItem.filed_date ? new Date(caseItem.filed_date).toLocaleDateString() : 'N/A'}</div>
+                    <div><strong>Next Hearing:</strong> ${caseItem.next_hearing ? new Date(caseItem.next_hearing).toLocaleDateString() : 'Not Scheduled'}</div>
+                </div>
+                
+                <div class="case-meta">
+                    <div><strong>Parties:</strong> ${escapeHtml(caseItem.plaintiff || 'N/A')} vs. ${escapeHtml(caseItem.defendant || 'N/A')}</div>
+                </div>
+                
+                <div class="case-actions">
+                    <button class="btn btn-sm btn-outline" onclick="viewCaseDetails('${caseItem.id}')">
+                        <i>👁️</i> View Details
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="editCase('${caseItem.id}')">
+                        <i>✏️</i> Edit Case
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="manageFiles('${caseItem.id}')">
+                        <i>📁</i> Case Files
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="scheduleHearing('${caseItem.id}')">
+                        <i>📅</i> Schedule
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="deleteCase('${caseItem.id}')" style="color: var(--error);">
+                        <i>🗑️</i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function getStatusClass(status) {
+        if (!status) return 'badge-warning';
+        status = status.toLowerCase();
+        if (status === 'active') return 'badge-success';
+        if (status === 'pending') return 'badge-warning';
+        if (status === 'concluded') return 'badge-info';
+        if (status === 'appealed') return 'badge-info';
+        if (status === 'archived') return 'badge-error';
+        return 'badge-warning';
+    }
+    
+    function searchCases() {
+        const query = document.getElementById('caseSearch').value.toLowerCase();
+        const type = document.getElementById('filterType').value;
+        const status = document.getElementById('filterStatus').value;
+        const station = document.getElementById('filterStation').value;
+        const judge = document.getElementById('filterJudge').value;
+        
+        let filteredCases = casesData;
+        
+        // Apply text search
+        if (query) {
+            filteredCases = filteredCases.filter(caseItem => 
+                (caseItem.case_number && caseItem.case_number.toLowerCase().includes(query)) ||
+                (caseItem.title && caseItem.title.toLowerCase().includes(query)) ||
+                (caseItem.plaintiff && caseItem.plaintiff.toLowerCase().includes(query)) ||
+                (caseItem.defendant && caseItem.defendant.toLowerCase().includes(query))
+            );
+        }
+        
+        // Apply filters
+        if (type) {
+            filteredCases = filteredCases.filter(caseItem => 
+                (caseItem.type || caseItem.case_type) === type
+            );
+        }
+        
+        if (status) {
+            filteredCases = filteredCases.filter(caseItem => 
+                (caseItem.status || '').toLowerCase() === status.toLowerCase()
+            );
+        }
+        
+        if (station) {
+            filteredCases = filteredCases.filter(caseItem => 
+                (caseItem.court_station || caseItem.court) === station
+            );
+        }
+        
+        if (judge) {
+            filteredCases = filteredCases.filter(caseItem => 
+                (caseItem.judge || caseItem.presiding_judge) === judge
+            );
+        }
+        
+        renderCases(filteredCases);
+        
+        if (filteredCases.length === 0 && (query || type || status || station || judge)) {
+            showNotification('No cases found matching your criteria', 'info');
+        }
+    }
+    
+    function clearFilters() {
+        document.getElementById('caseSearch').value = '';
+        document.getElementById('filterType').selectedIndex = 0;
+        document.getElementById('filterStatus').selectedIndex = 0;
+        document.getElementById('filterStation').selectedIndex = 0;
+        document.getElementById('filterJudge').selectedIndex = 0;
+        renderCases(casesData);
+        showNotification('Filters cleared', 'success');
+    }
+    
+    function viewCaseDetails(caseId) {
+        const caseItem = casesData.find(c => c.id == caseId);
+        if (caseItem) {
+            alert(`Case Details:\n\n` +
+                  `Number: ${caseItem.case_number}\n` +
+                  `Title: ${caseItem.title}\n` +
+                  `Type: ${caseItem.type}\n` +
+                  `Status: ${caseItem.status}\n` +
+                  `Judge: ${caseItem.judge}\n` +
+                  `Station: ${caseItem.court_station}\n` +
+                  `Plaintiff: ${caseItem.plaintiff}\n` +
+                  `Defendant: ${caseItem.defendant}\n` +
+                  `Summary: ${caseItem.summary || 'N/A'}`);
+        } else {
+            showNotification('Case not found', 'error');
+        }
+    }
+    
+    function editCase(caseId) {
+        const caseItem = casesData.find(c => c.id == caseId);
+        if (caseItem) {
+            // Populate form with case data
+            document.getElementById('caseNumber').value = caseItem.case_number || '';
+            document.getElementById('caseType').value = caseItem.type || caseItem.case_type || '';
+            document.getElementById('caseTitle').value = caseItem.title || caseItem.case_title || '';
+            document.getElementById('plaintiff').value = caseItem.plaintiff || '';
+            document.getElementById('defendant').value = caseItem.defendant || '';
+            document.getElementById('presidingJudge').value = caseItem.judge || caseItem.presiding_judge || '';
+            document.getElementById('courtStation').value = caseItem.court_station || caseItem.court || '';
+            document.getElementById('caseSummary').value = caseItem.summary || caseItem.description || '';
+            
+            openModal('newCaseModal');
+        } else {
+            showNotification('Case not found', 'error');
+        }
+    }
+    
+    function manageFiles(caseId) {
+        showNotification(`Redirecting to file management for case ${caseId}`, 'info');
+        setTimeout(() => {
+            window.location.href = `upload.html?case=${encodeURIComponent(caseId)}`;
+        }, 1000);
+    }
+    
+    function scheduleHearing(caseId) {
+        const caseItem = casesData.find(c => c.id == caseId);
+        if (caseItem) {
+            const hearingDate = prompt(`Schedule hearing for case ${caseItem.case_number}\nEnter date (YYYY-MM-DD):`, 
+                caseItem.next_hearing || new Date().toISOString().split('T')[0]);
+            
+            if (hearingDate) {
+                // Update the case
+                caseItem.next_hearing = hearingDate;
+                renderCases(casesData);
+                generateCalendar();
+                showNotification(`Hearing scheduled for ${hearingDate}`, 'success');
+            }
+        }
+    }
+    
+    function deleteCase(caseId) {
+        if (confirm('Are you sure you want to delete this case? This action cannot be undone.')) {
+            casesData = casesData.filter(c => c.id != caseId);
+            renderCases(casesData);
+            generateCalendar();
+            showNotification('Case deleted successfully', 'success');
+        }
+    }
+    
+    function submitCase() {
+        const form = document.getElementById('caseForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        const newCase = {
+            id: Date.now(), // Generate unique ID
+            case_number: document.getElementById('caseNumber').value,
+            type: document.getElementById('caseType').value,
+            title: document.getElementById('caseTitle').value,
+            plaintiff: document.getElementById('plaintiff').value,
+            defendant: document.getElementById('defendant').value,
+            judge: document.getElementById('presidingJudge').value,
+            court_station: document.getElementById('courtStation').value,
+            summary: document.getElementById('caseSummary').value,
+            status: 'Active',
+            filed_date: new Date().toISOString().split('T')[0],
+            next_hearing: document.getElementById('hearingDate').value || null
+        };
+        
+        // Add to cases array
+        casesData.unshift(newCase);
+        
+        // Update UI
+        renderCases(casesData);
+        generateCalendar();
+        
+        // Close modal and reset form
+        closeModal('newCaseModal');
+        showNotification('Case registered successfully', 'success');
+    }
+    
+    // ==================== CALENDAR FUNCTIONS ====================
+    
+    function generateCalendar() {
+        const calendarGrid = document.getElementById('calendarGrid');
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        // Update month display
+        document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        
+        // Clear existing content
+        calendarGrid.innerHTML = '';
+        
+        // Day headers
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        days.forEach(day => {
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'calendar-day-header';
+            dayHeader.textContent = day;
+            calendarGrid.appendChild(dayHeader);
+        });
+        
+        // Get first day of month
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const startingDay = firstDay.getDay();
+        
+        // Get last day of month
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        const totalDays = lastDay.getDate();
+        
+        // Get today's date
+        const today = new Date();
+        const isToday = (day) => 
+            day === today.getDate() && 
+            currentMonth === today.getMonth() && 
+            currentYear === today.getFullYear();
+        
+        // Add empty cells for days before first day of month
+        for (let i = 0; i < startingDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day';
+            calendarGrid.appendChild(emptyDay);
+        }
+        
+        // Add days of the month
+        for (let day = 1; day <= totalDays; day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = `calendar-day ${isToday(day) ? 'today' : ''}`;
+            
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day;
+            dayDiv.appendChild(dayNumber);
+            
+            // Add hearings for this day
+            const hearings = casesData.filter(caseItem => {
+                if (!caseItem.next_hearing) return false;
+                const hearingDate = new Date(caseItem.next_hearing);
+                return hearingDate.getDate() === day && 
+                       hearingDate.getMonth() === currentMonth && 
+                       hearingDate.getFullYear() === currentYear;
+            });
+            
+            hearings.forEach(hearing => {
+                const hearingEvent = document.createElement('div');
+                hearingEvent.className = 'hearing-event';
+                hearingEvent.textContent = hearing.case_number;
+                hearingEvent.title = `${hearing.title}\n${hearing.judge}`;
+                hearingEvent.onclick = () => viewHearingDetails(hearing.id);
+                dayDiv.appendChild(hearingEvent);
+            });
+            
+            calendarGrid.appendChild(dayDiv);
+        }
+    }
+    
+    function viewHearingDetails(caseId) {
+        const caseItem = casesData.find(c => c.id == caseId);
+        if (caseItem) {
+            alert(`Hearing Details:\n\n` +
+                  `Case: ${caseItem.case_number}\n` +
+                  `Title: ${caseItem.title}\n` +
+                  `Judge: ${caseItem.judge}\n` +
+                  `Court: ${caseItem.court_station}\n` +
+                  `Scheduled: ${caseItem.next_hearing}\n` +
+                  `Parties: ${caseItem.plaintiff} vs. ${caseItem.defendant}`);
+        }
+    }
+    
+    function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        generateCalendar();
+    }
+    
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar();
+    }
+    
+    // ==================== HELPER FUNCTIONS ====================
+    
+    function getMockCases() {
+        return [
+            {
+                id: 1,
+                case_number: 'CR-2024-001',
+                type: 'Criminal',
+                title: 'State vs. John Doe',
+                plaintiff: 'Republic of Kenya',
+                defendant: 'John Doe',
+                judge: 'Justice Katanu',
+                court_station: 'Nairobi High Court',
+                summary: 'Criminal case involving allegations of financial fraud. Multiple witnesses scheduled.',
+                status: 'Active',
+                filed_date: '2024-10-01',
+                next_hearing: '2024-10-20'
+            },
+            {
+                id: 2,
+                case_number: 'CV-2024-045',
+                type: 'Civil',
+                title: 'Land Dispute Case',
+                plaintiff: 'Jane Smith',
+                defendant: 'County Government of Nairobi',
+                judge: 'Justice Mwangi',
+                court_station: 'Mombasa Law Courts',
+                summary: 'Land ownership dispute involving ancestral property.',
+                status: 'Pending',
+                filed_date: '2024-09-15',
+                next_hearing: '2024-10-22'
+            },
+            {
+                id: 3,
+                case_number: 'HC-2024-078',
+                type: 'Constitutional',
+                title: 'Constitutional Petition',
+                plaintiff: 'Human Rights Commission',
+                defendant: 'Attorney General',
+                judge: 'Justice Omondi',
+                court_station: 'Nakuru High Court',
+                summary: 'Challenge to recent constitutional amendments.',
+                status: 'Active',
+                filed_date: '2024-08-20',
+                next_hearing: '2024-10-25'
+            },
+            {
+                id: 4,
+                case_number: 'COM-2024-012',
+                type: 'Commercial',
+                title: 'Contract Dispute',
+                plaintiff: 'Kenya Commercial Bank',
+                defendant: 'Tech Solutions Ltd',
+                judge: 'Justice Wambua',
+                court_station: 'Kisumu Law Courts',
+                summary: 'Breach of contract in software development agreement.',
+                status: 'Active',
+                filed_date: '2024-10-05',
+                next_hearing: '2024-10-28'
+            },
+            {
+                id: 5,
+                case_number: 'FAM-2024-033',
+                type: 'Family',
+                title: 'Child Custody Case',
+                plaintiff: 'Mary Johnson',
+                defendant: 'Robert Johnson',
+                judge: 'Justice Katanu',
+                court_station: 'Nairobi High Court',
+                summary: 'Child custody dispute following divorce proceedings.',
+                status: 'Concluded',
+                filed_date: '2024-07-10',
+                next_hearing: null
+            }
+        ];
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function showError(message) {
+        showNotification(message, 'error');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+    }
+    
+    // ==================== INITIALIZATION ====================
+    
+    async function initializePage() {
+        showLoading();
+        
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showError('Please login to access the Case Registry');
+            return;
+        }
+        
+        try {
+            // Show dashboard
+            document.getElementById('dashboardContainer').style.display = 'flex';
+            
+            // Load cases
+            await loadCases();
+            
+            // Set up filter listeners
+            document.getElementById('caseSearch').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchCases();
+                }
+            });
+            
+            document.querySelectorAll('.case-filters select').forEach(select => {
+                select.addEventListener('change', searchCases);
+            });
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showNotification('Error loading page', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

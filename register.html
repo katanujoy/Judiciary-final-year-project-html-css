@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0d1b3e;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --black: #1a1a1a;
+            --gray-light: #f5f7fa;
+            --gray: #64748b;
+            --gray-dark: #334155;
+            --primary: #2563eb;
+            --error: #dc2626;
+            --success: #059669;
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --card-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--gray-light) 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-container {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .register-card {
+            background: var(--white);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: var(--navy);
+            padding: 40px 30px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold);
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            color: var(--white);
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .logo-text h1 {
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .logo-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        
+        .card-body {
+            padding: 40px 30px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(13, 27, 62, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+        
+        .btn-register:hover {
+            background: #0c1735;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 27, 62, 0.2);
+        }
+        
+        .btn-register:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .card-footer {
+            padding: 25px 30px 30px;
+            background: var(--gray-light);
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .login-link {
+            color: var(--navy);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .login-link:hover {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--error);
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--success);
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            color: var(--navy);
+            font-weight: 500;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .requirements {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .judicial-id {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .judicial-id strong {
+            color: var(--navy);
+        }
+        
+        @media (max-width: 480px) {
+            .register-container {
+                max-width: 100%;
+            }
+            
+            .card-header,
+            .card-body,
+            .card-footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="card-header">
+                <a href="index.html" class="back-link">← Back to Login</a>
+                <div class="logo">
+                    <div class="logo-icon">⚖️</div>
+                    <div class="logo-text">
+                        <h1>Request Access</h1>
+                        <p>Judiciary Digital Archives System</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+                <div class="loading" id="loading">Submitting request...</div>
+                
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="first_name" placeholder="Joy" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="last_name" placeholder="Katanu" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Official Email Address *</label>
+                        <input type="email" class="form-control" id="email" placeholder="joy.katanu@judiciary.go.ke" required>
+                        <div class="requirements">Must be an official judiciary email address (@judiciary.go.ke)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employee_id" class="form-label">Employee/Judge ID *</label>
+                        <input type="text" class="form-control" id="employee_id" placeholder="J-001 or EMP-123" required>
+                        <div class="judicial-id">
+                            <strong>Format:</strong> Judges: J-XXX, Clerks: CL-XXX, Registrars: R-XXX
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role" class="form-label">Judicial Role *</label>
+                            <select class="form-control" id="role" required>
+                                <option value="">Select Role</option>
+                                <option value="judge">Judge</option>
+                                <option value="court_clerk">Court Clerk</option>
+                                <option value="registrar">Court Registrar</option>
+                                <option value="magistrate">Magistrate</option>
+                                <option value="administrator">System Administrator</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="court_station" class="form-label">Court Station *</label>
+                            <select class="form-control" id="court_station" required>
+                                <option value="">Select Station</option>
+                                <option value="nairobi">Nairobi High Court</option>
+                                <option value="mombasa">Mombasa Law Courts</option>
+                                <option value="nakuru">Nakuru High Court</option>
+                                <option value="kisumu">Kisumu Law Courts</option>
+                                <option value="eldoret">Eldoret High Court</option>
+                                <option value="machakos">Machakos Law Courts</option>
+                                <option value="nyeri">Nyeri High Court</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone_number" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone_number" placeholder="+254 700 000000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="department" class="form-label">Department/Division</label>
+                        <input type="text" class="form-control" id="department" placeholder="e.g., Commercial Court, Criminal Division">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Additional Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="Any additional information for administrators..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" style="margin-top: 3px;" id="terms" required>
+                            <span style="font-size: 0.9rem; color: var(--gray-dark);">
+                                I agree to the <a href="#" onclick="event.preventDefault(); showTerms()" style="color: var(--navy);">Terms of Service</a> and 
+                                confirm that I am an authorized judicial officer. All activities are logged and monitored.
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-register" id="registerBtn">
+                        Submit Access Request
+                    </button>
+                </form>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(13, 27, 62, 0.05); border-radius: 8px;">
+                    <h4 style="color: var(--navy); margin-bottom: 10px; font-size: 0.95rem;">Important Information:</h4>
+                    <p style="color: var(--gray-dark); font-size: 0.9rem; line-height: 1.5;">
+                        Your access request will be reviewed by a system administrator. 
+                        Approval may take up to 24 hours. You will receive an email notification 
+                        once your account has been approved.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <p>Already have an account? <a href="index.html" class="login-link">Sign In Here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:5000';
+        
+        // Show error message
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        // Show success message
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        // Hide all messages
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        // Show terms modal
+        function showTerms() {
+            alert('Terms of Service: All judicial officers must adhere to ethical guidelines and data protection policies. Unauthorized access is prohibited.');
+        }
+        
+        // Validate judiciary email
+        function validateJudiciaryEmail(email) {
+            return email.endsWith('@judiciary.go.ke') || email.endsWith('@judiciary.ke');
+        }
+        
+        // Validate employee ID format
+        function validateEmployeeId(id) {
+            const patterns = [
+                /^J-\d{3}$/,      // Judge: J-001
+                /^CL-\d{3}$/,     // Clerk: CL-001
+                /^R-\d{3}$/,      // Registrar: R-001
+                /^M-\d{3}$/,      // Magistrate: M-001
+                /^ADM-\d{3}$/,    // Admin: ADM-001
+                /^EMP-\d{3}$/     // Employee: EMP-001
+            ];
+            return patterns.some(pattern => pattern.test(id.toUpperCase()));
+        }
+        
+        // Handle form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                first_name: document.getElementById('first_name').value.trim(),
+                last_name: document.getElementById('last_name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                employee_id: document.getElementById('employee_id').value.trim(),
+                role: document.getElementById('role').value,
+                court_station: document.getElementById('court_station').value,
+                phone_number: document.getElementById('phone_number').value.trim() || null,
+                department: document.getElementById('department').value.trim() || null,
+                notes: document.getElementById('notes').value.trim() || null
+            };
+            
+            // Validation
+            if (!validateJudiciaryEmail(formData.email)) {
+                showError('Please use an official judiciary email address (@judiciary.go.ke or @judiciary.ke)');
+                return;
+            }
+            
+            if (!validateEmployeeId(formData.employee_id)) {
+                showError('Invalid employee ID format. Please use format: J-001, CL-001, R-001, etc.');
+                return;
+            }
+            
+            if (!formData.role) {
+                showError('Please select a judicial role');
+                return;
+            }
+            
+            if (!formData.court_station) {
+                showError('Please select a court station');
+                return;
+            }
+            
+            const registerBtn = document.getElementById('registerBtn');
+            const loading = document.getElementById('loading');
+            
+            // Reset messages
+            hideMessages();
+            
+            // Show loading state
+            loading.style.display = 'block';
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Submitting...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Show success message
+                    showSuccess('Access request submitted successfully! Your request will be reviewed by an administrator. You will receive an email notification once approved.');
+                    
+                    // Reset form
+                    document.getElementById('registerForm').reset();
+                    
+                    // Auto-redirect after 5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html?registration=success';
+                    }, 5000);
+                    
+                } else {
+                    throw new Error(data.error || 'Registration failed');
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError(error.message || 'Network error. Please try again.');
+                
+            } finally {
+                // Reset button state
+                loading.style.display = 'none';
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Submit Access Request';
+            }
+        });
+        
+        // Auto-focus first field
+        document.getElementById('first_name').focus();
+        
+        // Check email format on blur
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !validateJudiciaryEmail(email)) {
+                showError('Note: Official judiciary email addresses end with @judiciary.go.ke or @judiciary.ke');
+            } else {
+                hideMessages();
+            }
+        });
+        
+        // Check employee ID format on blur
+        document.getElementById('employee_id').addEventListener('blur', function() {
+            const id = this.value.trim();
+            if (id && !validateEmployeeId(id)) {
+                showError('Format: Judges: J-001, Clerks: CL-001, Registrars: R-001');
+            } else {
+                hideMessages();
+            }
+        });
+        
+        // Auto-format employee ID
+        document.getElementById('employee_id').addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase();
+            value = value.replace(/[^A-Z0-9\-]/g, '');
+            e.target.value = value;
+        });
+        
+        // Enter key to submit
+        document.getElementById('notes').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

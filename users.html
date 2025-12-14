@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registry - Kenya Judiciary Digital Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stat-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border-left: 4px solid var(--gold);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--light-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 1.1rem;
+        }
+        
+        .user-email {
+            font-size: 0.9rem;
+            color: var(--slate);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .pending-approvals {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            border: 2px dashed var(--gold);
+        }
+        
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .permission-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .activity-log {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .log-entry {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .log-time {
+            color: var(--slate);
+            font-size: 0.8rem;
+            min-width: 120px;
+        }
+        
+        .log-action {
+            color: var(--navy);
+            margin-left: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body data-requires-auth="true">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>⚖️ Kenya Judiciary</h3>
+                <p>Digital Archives System</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="dashboard.html"><i>📊</i> Judicial Dashboard</a></li>
+                <li class="nav-item"><a href="cases.html"><i>📁</i> Case Registry</a></li>
+                <li class="nav-item"><a href="upload.html"><i>📤</i> File Upload</a></li>
+                <li class="nav-item"><a href="search.html"><i>🔍</i> Legal Search</a></li>
+                <li class="nav-item"><a href="backup.html"><i>💾</i> System Backups</a></li>
+                <li class="nav-item active"><a href="users.html"><i>👥</i> User Registry</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h2>User Registry & Permissions</h2>
+                    <p class="text-light">Manage judicial system users and access controls</p>
+                </div>
+                <div class="user-menu">
+                    <button class="btn btn-primary" onclick="openModal('addUserModal')">
+                        <i>➕</i> Add New User
+                    </button>
+                </div>
+            </header>
+
+            <!-- User Statistics -->
+            <div class="user-stats">
+                <div class="stat-card">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--navy);" id="totalUsers">--</div>
+                    <div style="color: var(--slate);">Total Users</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--forest);" id="activeUsers">--</div>
+                    <div style="color: var(--slate);">Active Users</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--gold);" id="pendingUsers">--</div>
+                    <div style="color: var(--slate);">Pending Approval</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--burgundy);" id="lockedUsers">--</div>
+                    <div style="color: var(--slate);">Locked Accounts</div>
+                </div>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div class="pending-approvals">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                    <h3 style="color: var(--navy);">Pending Registrations</h3>
+                    <span class="badge badge-warning" id="pendingCount">0 pending</span>
+                </div>
+                
+                <div id="pendingList">
+                    <!-- Pending users will be loaded here -->
+                    <div style="text-align: center; padding: 1rem; color: var(--slate);">
+                        No pending registrations
+                    </div>
+                </div>
+            </div>
+
+            <!-- User List -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>System Users</h3>
+                    <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                        <input type="search" class="form-control" placeholder="Search users..." id="userSearch" 
+                               style="width: 200px;" oninput="searchUsers()">
+                        <button class="btn btn-outline btn-sm" onclick="searchUsers()">
+                            <i>🔍</i> Search
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="exportUserList()">
+                            <i>📥</i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="userList">
+                        <!-- Users will be loaded here -->
+                        <div class="user-card">
+                            <div class="user-header">
+                                <div class="user-info">
+                                    <div class="user-avatar">JK</div>
+                                    <div class="user-details">
+                                        <div class="user-name">Justice Joy Katanu</div>
+                                        <div class="user-email">judge.katanu@judiciary.go.ke</div>
+                                        <div style="display: flex; gap: var(--spacing-sm); margin-top: 0.25rem;">
+                                            <span class="badge badge-success">Judge</span>
+                                            <span style="font-size: 0.8rem; color: var(--slate);">
+                                                Nairobi High Court
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="btn btn-sm btn-outline" onclick="editUser(1)">
+                                        <i>✏️</i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="resetPassword(1)">
+                                        <i>🔑</i> Reset PW
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-sm);">
+                                <div style="font-size: 0.9rem; color: var(--slate);">
+                                    Last login: Today 09:45 AM • Cases: 12 • Files: 245
+                                </div>
+                                <span class="badge badge-success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permission Matrix -->
+            <div class="permission-grid">
+                <div class="permission-card">
+                    <h4 style="color: var(--navy); margin-bottom: var(--spacing-md);">👑 Judge Permissions</h4>
+                    <div class="permission-item">
+                        <span>View all assigned cases</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Upload and manage case files</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Search across all documents</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Generate case reports</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Manage system users</span>
+                        <span class="badge badge-danger">Denied</span>
+                    </div>
+                </div>
+                
+                <div class="permission-card">
+                    <h4 style="color: var(--navy); margin-bottom: var(--spacing-md);">📋 Court Clerk Permissions</h4>
+                    <div class="permission-item">
+                        <span>Upload files to any case</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Manage case metadata</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Search and retrieve documents</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Generate basic reports</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Delete case files</span>
+                        <span class="badge badge-danger">Denied</span>
+                    </div>
+                </div>
+                
+                <div class="permission-card">
+                    <h4 style="color: var(--navy); margin-bottom: var(--spacing-md);">⚙️ Administrator Permissions</h4>
+                    <div class="permission-item">
+                        <span>Full system access</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Manage all user accounts</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Configure system settings</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Manage backups and restore</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                    <div class="permission-item">
+                        <span>Security configuration</span>
+                        <span class="badge badge-success">Allowed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Activity Log -->
+            <div class="activity-log">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent User Activity</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="activityLog">
+                            <div class="log-entry">
+                                <div class="log-time">Today 10:30 AM</div>
+                                <div>Justice Katanu</div>
+                                <div class="log-action">uploaded file to CR-2024-001</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">Today 09:45 AM</div>
+                                <div>System Admin</div>
+                                <div class="log-action">approved new user registration</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">Today 09:30 AM</div>
+                                <div>Clerk Wanjiru</div>
+                                <div class="log-action">searched for land dispute cases</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Add / Edit User</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('addUserModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="editingUserId">
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Full Name*</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Justice Joy Katanu" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address*</label>
+                            <input type="email" class="form-control" id="email" placeholder="user@judiciary.go.ke" required>
+                            <small class="text-light">Must use official judiciary email</small>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Role*</label>
+                            <select class="form-control form-select" id="userRole" required>
+                                <option value="">Select Role</option>
+                                <option value="judge">Judge</option>
+                                <option value="clerk">Court Clerk</option>
+                                <option value="registrar">Court Registrar</option>
+                                <option value="admin">System Administrator</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Court Station</label>
+                            <select class="form-control form-select" id="courtStation">
+                                <option value="">Select Station</option>
+                                <option>Nairobi High Court</option>
+                                <option>Mombasa Law Courts</option>
+                                <option>Nakuru High Court</option>
+                                <option>Kisumu Law Courts</option>
+                                <option>Eldoret High Court</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="form-group">
+                            <label class="form-label">Employee/Judge ID*</label>
+                            <input type="text" class="form-control" id="employeeId" placeholder="J-001 or EMP-123" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Initial Password</label>
+                            <input type="text" class="form-control" id="password" value="ChangeMe123" required>
+                            <small class="text-light">User will be required to change on first login</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Access Permissions</label>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-xs);">
+                            <label class="d-flex align-center gap-2">
+                                <input type="checkbox" id="permView" checked> View cases and documents
+                            </label>
+                            <label class="d-flex align-center gap-2">
+                                <input type="checkbox" id="permUpload"> Upload files
+                            </label>
+                            <label class="d-flex align-center gap-2">
+                                <input type="checkbox" id="permEdit"> Edit case metadata
+                            </label>
+                            <label class="d-flex align-center gap-2">
+                                <input type="checkbox" id="permDelete"> Delete documents
+                            </label>
+                            <label class="d-flex align-center gap-2">
+                                <input type="checkbox" id="permAdmin"> Administrative access
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Account Status</label>
+                        <select class="form-control form-select" id="accountStatus">
+                            <option value="active" selected>Active</option>
+                            <option value="pending">Pending Approval</option>
+                            <option value="suspended">Suspended</option>
+                            <option value="locked">Locked</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addUserModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUser()">Save User</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ============ GLOBAL VARIABLES & CONSTANTS ============
+        const API_ENDPOINTS = {
+            users: '/api/users',
+            pendingUsers: '/api/users/pending',
+            approveUser: (id) => `/api/users/${id}/approve`,
+            rejectUser: (id) => `/api/users/${id}/reject`,
+            resetPassword: (id) => `/api/users/${id}/reset-password`,
+            user: (id) => `/api/users/${id}`
+        };
+
+        let currentUserRole = 'admin'; // This would come from authentication
+        let usersCache = [];
+
+        // ============ HELPER FUNCTIONS ============
+        function getAuthHeaders() {
+            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            };
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function capitalize(text) {
+            if (!text) return '';
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Invalid date';
+            
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            
+            return date.toLocaleDateString('en-KE', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getInitials(name) {
+            if (!name) return '??';
+            return name.split(' ')
+                .filter(word => word.length > 0)
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        // ============ BUTTON FUNCTIONALITY ============
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.getElementById('userForm').reset();
+            document.getElementById('editingUserId').value = '';
+            // Reset to default permissions
+            setPermissionsByRole('judge');
+        }
+
+        // Search Functionality
+        function searchUsers() {
+            const query = document.getElementById('userSearch').value.toLowerCase().trim();
+            const userCards = document.querySelectorAll('#userList .user-card');
+            
+            if (!query) {
+                // Show all users
+                userCards.forEach(card => card.style.display = '');
+                return;
+            }
+            
+            userCards.forEach(card => {
+                const name = card.querySelector('.user-name').textContent.toLowerCase();
+                const email = card.querySelector('.user-email').textContent.toLowerCase();
+                const role = card.querySelector('.badge').textContent.toLowerCase();
+                const station = card.querySelector('.user-details span:nth-child(2)').textContent.toLowerCase();
+                
+                const matches = name.includes(query) || 
+                               email.includes(query) || 
+                               role.includes(query) || 
+                               station.includes(query);
+                
+                card.style.display = matches ? '' : 'none';
+            });
+        }
+
+        // Export Functionality
+        function exportUserList() {
+            try {
+                // Collect user data from the DOM
+                const users = [];
+                document.querySelectorAll('#userList .user-card').forEach(card => {
+                    if (card.style.display !== 'none') {
+                        const name = card.querySelector('.user-name').textContent.trim();
+                        const email = card.querySelector('.user-email').textContent.trim();
+                        const role = card.querySelector('.badge').textContent.trim();
+                        const station = card.querySelector('.user-details span:nth-child(2)').textContent.trim();
+                        const status = card.querySelector('.badge:last-child').textContent.trim();
+                        
+                        users.push({
+                            name, email, role, station, status,
+                            lastLogin: card.querySelector('div[style*="font-size: 0.9rem"]').textContent.split('Last login:')[1]?.split('•')[0]?.trim() || 'Unknown'
+                        });
+                    }
+                });
+                
+                // Create CSV content
+                const headers = ['Name', 'Email', 'Role', 'Court Station', 'Status', 'Last Login'];
+                const rows = users.map(user => [
+                    user.name,
+                    user.email,
+                    user.role,
+                    user.station,
+                    user.status,
+                    user.lastLogin
+                ]);
+                
+                const csvContent = [
+                    headers.join(','),
+                    ...rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+                ].join('\n');
+                
+                // Create and trigger download
+                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `judiciary_users_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showNotification(`Exported ${users.length} users successfully!`, 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('Failed to export user list', 'error');
+            }
+        }
+
+        // Approve User with confirmation
+        async function approveUser(userId) {
+            if (!confirm('Approve this user registration?')) return;
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Update UI
+                const pendingContainer = document.getElementById('pendingList');
+                const userCard = pendingContainer.querySelector(`button[onclick*="approveUser(${userId})"]`)?.closest('.user-card');
+                
+                if (userCard) {
+                    userCard.style.opacity = '0.5';
+                    userCard.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                    
+                    setTimeout(() => {
+                        userCard.remove();
+                        updatePendingCount();
+                        updateUserStats();
+                        showNotification('User approved successfully!', 'success');
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Approve error:', error);
+                showNotification('Failed to approve user', 'error');
+            }
+        }
+
+        // Reject User with confirmation
+        async function rejectUser(userId) {
+            const reason = prompt('Please enter reason for rejection:');
+            if (!reason) return;
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Update UI
+                const pendingContainer = document.getElementById('pendingList');
+                const userCard = pendingContainer.querySelector(`button[onclick*="rejectUser(${userId})"]`)?.closest('.user-card');
+                
+                if (userCard) {
+                    userCard.style.opacity = '0.5';
+                    userCard.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                    
+                    setTimeout(() => {
+                        userCard.remove();
+                        updatePendingCount();
+                        updateUserStats();
+                        showNotification(`User rejected: ${reason}`, 'warning');
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Reject error:', error);
+                showNotification('Failed to reject user', 'error');
+            }
+        }
+
+        // Edit User - Enhanced version
+        async function editUser(userId) {
+            try {
+                // In real implementation, fetch user data from API
+                // For now, use mock data
+                const mockUser = {
+                    id: userId,
+                    full_name: 'Justice Joy Katanu',
+                    email: 'judge.katanu@judiciary.go.ke',
+                    role: 'judge',
+                    court_station: 'Nairobi High Court',
+                    employee_id: 'J-001',
+                    status: 'active'
+                };
+                
+                // Populate form
+                document.getElementById('editingUserId').value = mockUser.id;
+                document.getElementById('fullName').value = mockUser.full_name;
+                document.getElementById('email').value = mockUser.email;
+                document.getElementById('userRole').value = mockUser.role;
+                document.getElementById('courtStation').value = mockUser.court_station;
+                document.getElementById('employeeId').value = mockUser.employee_id;
+                document.getElementById('password').value = ''; // Clear password field
+                document.getElementById('accountStatus').value = mockUser.status;
+                
+                // Set permissions based on role
+                setPermissionsByRole(mockUser.role);
+                
+                openModal('addUserModal');
+                
+            } catch (error) {
+                console.error('Edit error:', error);
+                showNotification('Failed to load user data', 'error');
+            }
+        }
+
+        // Reset Password with confirmation
+        async function resetPassword(userId) {
+            const newPassword = prompt('Enter new password for the user (min 8 characters):');
+            if (!newPassword) return;
+            
+            if (newPassword.length < 8) {
+                showNotification('Password must be at least 8 characters', 'error');
+                return;
+            }
+            
+            if (!confirm(`Reset password? The user will be required to change it on next login.`)) return;
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                showNotification('Password reset successfully!', 'success');
+            } catch (error) {
+                console.error('Reset password error:', error);
+                showNotification('Failed to reset password', 'error');
+            }
+        }
+
+        // Save User - Complete implementation
+        async function saveUser() {
+            const form = document.getElementById('userForm');
+            
+            // Validate form
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // Collect form data
+            const userData = {
+                id: document.getElementById('editingUserId').value,
+                full_name: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                role: document.getElementById('userRole').value,
+                court_station: document.getElementById('courtStation').value,
+                employee_id: document.getElementById('employeeId').value.trim(),
+                password: document.getElementById('password').value,
+                status: document.getElementById('accountStatus').value,
+                permissions: {
+                    view: document.getElementById('permView').checked,
+                    upload: document.getElementById('permUpload').checked,
+                    edit: document.getElementById('permEdit').checked,
+                    delete: document.getElementById('permDelete').checked,
+                    admin: document.getElementById('permAdmin').checked
+                }
+            };
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(userData.email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Validate judiciary email
+            if (!userData.email.includes('judiciary.go.ke')) {
+                const proceed = confirm('Email is not an official judiciary address. Continue anyway?');
+                if (!proceed) return;
+            }
+            
+            try {
+                // Show loading
+                const saveBtn = document.querySelector('#addUserModal .btn-primary');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+                saveBtn.disabled = true;
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Success
+                const isEdit = userData.id;
+                showNotification(isEdit ? 'User updated successfully!' : 'User added successfully!', 'success');
+                
+                // Close modal
+                closeModal('addUserModal');
+                
+                // Refresh user data
+                loadMockUsers();
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                showNotification('Failed to save user', 'error');
+            } finally {
+                // Restore button
+                const saveBtn = document.querySelector('#addUserModal .btn-primary');
+                saveBtn.innerHTML = 'Save User';
+                saveBtn.disabled = false;
+            }
+        }
+
+        // ============ UTILITY FUNCTIONS ============
+        function setPermissionsByRole(role) {
+            const permissions = {
+                judge: { view: true, upload: true, edit: true, delete: false, admin: false },
+                clerk: { view: true, upload: true, edit: true, delete: false, admin: false },
+                registrar: { view: true, upload: true, edit: true, delete: true, admin: false },
+                admin: { view: true, upload: true, edit: true, delete: true, admin: true }
+            };
+            
+            const rolePermissions = permissions[role] || permissions.judge;
+            
+            document.getElementById('permView').checked = rolePermissions.view;
+            document.getElementById('permUpload').checked = rolePermissions.upload;
+            document.getElementById('permEdit').checked = rolePermissions.edit;
+            document.getElementById('permDelete').checked = rolePermissions.delete;
+            document.getElementById('permAdmin').checked = rolePermissions.admin;
+        }
+
+        function updatePendingCount() {
+            const pendingContainer = document.getElementById('pendingList');
+            const pendingCards = pendingContainer.querySelectorAll('.user-card');
+            const count = pendingCards.length;
+            
+            document.getElementById('pendingCount').textContent = count === 0 ? '0 pending' : `${count} pending`;
+            
+            if (count === 0 && pendingContainer.children.length === 1) {
+                pendingContainer.innerHTML = `
+                    <div style="text-align: center; padding: 1rem; color: var(--slate);">
+                        No pending registrations
+                    </div>
+                `;
+            }
+        }
+
+        function updateUserStats() {
+            // Count users by status
+            const userCards = document.querySelectorAll('#userList .user-card');
+            const totalUsers = userCards.length;
+            const activeUsers = Array.from(userCards).filter(card => 
+                card.querySelector('.badge:last-child').textContent.includes('Active')
+            ).length;
+            
+            const pendingContainer = document.getElementById('pendingList');
+            const pendingUsers = pendingContainer.querySelectorAll('.user-card').length;
+            
+            const lockedUsers = Array.from(userCards).filter(card => 
+                card.querySelector('.badge:last-child').textContent.includes('Locked')
+            ).length;
+            
+            // Update display
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('pendingUsers').textContent = pendingUsers;
+            document.getElementById('lockedUsers').textContent = lockedUsers;
+        }
+
+        // Mock data loading functions
+        function loadMockUsers() {
+            const mockUsers = [
+                {
+                    id: 1,
+                    full_name: 'Justice Joy Katanu',
+                    email: 'judge.katanu@judiciary.go.ke',
+                    role: 'judge',
+                    court_station: 'Nairobi High Court',
+                    employee_id: 'J-001',
+                    last_login: '2024-10-15T09:45:00Z',
+                    status: 'active',
+                    case_count: 12,
+                    file_count: 245
+                },
+                {
+                    id: 2,
+                    full_name: 'Justice Michael Mwangi',
+                    email: 'judge.mwangi@judiciary.go.ke',
+                    role: 'judge',
+                    court_station: 'Mombasa Law Courts',
+                    employee_id: 'J-002',
+                    last_login: '2024-10-14T11:30:00Z',
+                    status: 'active',
+                    case_count: 8,
+                    file_count: 156
+                },
+                {
+                    id: 3,
+                    full_name: 'Clerk David Omondi',
+                    email: 'clerk.omondi@judiciary.go.ke',
+                    role: 'clerk',
+                    court_station: 'Nairobi High Court',
+                    employee_id: 'C1-023',
+                    last_login: '2024-10-15T08:15:00Z',
+                    status: 'active',
+                    case_count: 0,
+                    file_count: 89
+                },
+                {
+                    id: 4,
+                    full_name: 'Registrar Sarah Wanjiru',
+                    email: 'registrar.wanjiru@judiciary.go.ke',
+                    role: 'registrar',
+                    court_station: 'Kisumu Law Courts',
+                    employee_id: 'R-012',
+                    last_login: '2024-10-13T14:20:00Z',
+                    status: 'active',
+                    case_count: 24,
+                    file_count: 312
+                }
+            ];
+            
+            const container = document.getElementById('userList');
+            container.innerHTML = mockUsers.map(user => `
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-info">
+                            <div class="user-avatar">${getInitials(user.full_name)}</div>
+                            <div class="user-details">
+                                <div class="user-name">${escapeHtml(user.full_name)}</div>
+                                <div class="user-email">${escapeHtml(user.email)}</div>
+                                <div style="display: flex; gap: var(--spacing-sm); margin-top: 0.25rem;">
+                                    <span class="badge badge-${user.role === 'judge' ? 'success' : 
+                                                                 user.role === 'admin' ? 'info' : 
+                                                                 user.role === 'registrar' ? 'primary' : 'secondary'}">
+                                        ${capitalize(user.role)}
+                                    </span>
+                                    <span style="font-size: 0.8rem; color: var(--slate);">
+                                        ${escapeHtml(user.court_station)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-actions">
+                            <button class="btn btn-sm btn-outline" onclick="editUser(${user.id})">
+                                <i>✏️</i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="resetPassword(${user.id})">
+                                <i>🔑</i> Reset PW
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-sm);">
+                        <div style="font-size: 0.9rem; color: var(--slate);">
+                            Last login: ${formatDate(user.last_login)} • 
+                            Cases: ${user.case_count} • 
+                            Files: ${user.file_count}
+                        </div>
+                        <span class="badge badge-${user.status === 'active' ? 'success' : 
+                                                    user.status === 'pending' ? 'warning' : 'danger'}">
+                            ${capitalize(user.status)}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Update statistics
+            updateUserStats();
+        }
+
+        // ============ EVENT LISTENERS ============
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener for Enter key in search
+            const searchInput = document.getElementById('userSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchUsers();
+                    }
+                });
+            }
+            
+            // Add event listener for role change in modal
+            const roleSelect = document.getElementById('userRole');
+            if (roleSelect) {
+                roleSelect.addEventListener('change', function() {
+                    setPermissionsByRole(this.value);
+                });
+            }
+            
+            // Load initial data
+            loadMockUsers();
+            setPermissionsByRole('judge'); // Set default permissions
+        });
+
+        // Initialize page
+        console.log('User Registry loaded successfully!');
+    </script>
+</body>
+</html>

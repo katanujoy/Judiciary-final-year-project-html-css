@@ -1,0 +1,186 @@
+<!-- frontend/test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .success { color: green; }
+        .error { color: red; }
+        .result { margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Judiciary System - Backend Connection Test</h1>
+    
+    <div>
+        <h3>Backend Status</h3>
+        <button onclick="testBackend()">Test Backend Connection</button>
+        <button onclick="testCORS()">Test CORS</button>
+        <button onclick="loginTest()">Test Login</button>
+        <button onclick="testEndpoints()">Test All Endpoints</button>
+    </div>
+    
+    <div id="result" class="result"></div>
+    
+    <script>
+        const BACKEND_URL = 'http://localhost:5000/api';
+        let token = '';
+        
+        function log(message, isError = false) {
+            const result = document.getElementById('result');
+            const color = isError ? 'red' : 'green';
+            result.innerHTML += `<div style="color: ${color}; margin: 5px 0;">${message}</div>`;
+        }
+        
+        function clearLog() {
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        async function testBackend() {
+            clearLog();
+            log('Testing backend connection...');
+            
+            try {
+                const response = await fetch('http://localhost:5000/');
+                const data = await response.json();
+                log(`✅ Backend running: ${data.message}`);
+                log(`Status: ${response.status}`);
+                
+                // Check CORS headers
+                const corsHeaders = [];
+                response.headers.forEach((value, key) => {
+                    if (key.toLowerCase().includes('access-control')) {
+                        corsHeaders.push(`${key}: ${value}`);
+                    }
+                });
+                
+                if (corsHeaders.length > 0) {
+                    log('CORS Headers:');
+                    corsHeaders.forEach(header => log(`  ${header}`));
+                }
+            } catch (error) {
+                log(`❌ Cannot connect to backend: ${error.message}`, true);
+            }
+        }
+        
+        async function testCORS() {
+            clearLog();
+            log('Testing CORS...');
+            
+            try {
+                // Test preflight request
+                const response = await fetch(`${BACKEND_URL}/auth/me`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'http://localhost:5500',
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Authorization, Content-Type'
+                    }
+                });
+                
+                log(`Preflight Status: ${response.status}`);
+                
+                // Check CORS headers
+                const corsHeaders = [];
+                response.headers.forEach((value, key) => {
+                    if (key.toLowerCase().includes('access-control')) {
+                        corsHeaders.push(`${key}: ${value}`);
+                    }
+                });
+                
+                if (corsHeaders.length > 0) {
+                    log('CORS Headers found:');
+                    corsHeaders.forEach(header => log(`  ${header}`));
+                }
+                
+                if (response.status === 200) {
+                    log('✅ CORS is properly configured');
+                } else {
+                    log('⚠️ CORS might have issues', true);
+                }
+            } catch (error) {
+                log(`❌ CORS Test Error: ${error.message}`, true);
+            }
+        }
+        
+        async function loginTest() {
+            clearLog();
+            log('Testing login...');
+            
+            const loginData = {
+                email: 'admin@judiciary.go.ke',
+                password: 'Admin123'
+            };
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:5500'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.access_token) {
+                    token = data.access_token;
+                    log(`✅ Login successful!`);
+                    log(`Token received: ${token.substring(0, 20)}...`);
+                    log(`User: ${data.user?.full_name || 'Unknown'}`);
+                    log(`Role: ${data.user?.role || 'Unknown'}`);
+                } else {
+                    log(`❌ Login failed: ${data.error || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                log(`❌ Login error: ${error.message}`, true);
+            }
+        }
+        
+        async function testEndpoints() {
+            clearLog();
+            if (!token) {
+                log('⚠️ Please login first', true);
+                return;
+            }
+            
+            log('Testing authenticated endpoints...');
+            
+            const endpoints = [
+                { name: 'Current User', url: `${BACKEND_URL}/auth/me`, method: 'GET' },
+                { name: 'Cases', url: `${BACKEND_URL}/cases`, method: 'GET' },
+                { name: 'Case Stats', url: `${BACKEND_URL}/cases/statistics`, method: 'GET' },
+                { name: 'Recent Files', url: `${BACKEND_URL}/files/recent`, method: 'GET' },
+                { name: 'Backup List', url: `${BACKEND_URL}/backup`, method: 'GET' },
+                { name: 'Dashboard Report', url: `${BACKEND_URL}/reports/dashboard`, method: 'GET' },
+                { name: 'Pending Users', url: `${BACKEND_URL}/users/pending`, method: 'GET' }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint.url, {
+                        method: endpoint.method,
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Origin': 'http://localhost:5500'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        log(`✅ ${endpoint.name}: Success (${response.status})`);
+                    } else {
+                        const error = await response.json().catch(() => ({}));
+                        log(`❌ ${endpoint.name}: Failed (${response.status}) - ${error.error || 'Unknown error'}`, true);
+                    }
+                } catch (error) {
+                    log(`❌ ${endpoint.name}: Error - ${error.message}`, true);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
