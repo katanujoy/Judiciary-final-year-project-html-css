@@ -11,7 +11,15 @@ class User(db.Model):
     full_name = db.Column(db.String(100), nullable=False)
     employee_id = db.Column(db.String(20), unique=True, nullable=False)
     role = db.Column(
-        db.Enum("judge", "clerk", "admin", name="user_roles"),
+        db.Enum(
+            "judge",
+            "clerk",
+            "admin",
+            "registrar",
+            "magistrate",
+            "administrator",
+            name="user_roles"
+        ),
         nullable=False
     )
     court_station = db.Column(db.String(100))

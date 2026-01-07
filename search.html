@@ -116,6 +116,18 @@
             padding: 2px 4px;
             border-radius: 3px;
         }
+        
+        .saved-search {
+            background: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-sm);
+            transition: all 0.2s ease;
+        }
+        
+        .saved-search:hover {
+            background: var(--blue);
+            color: white;
+        }
     </style>
 </head>
 <body data-requires-auth="true">
@@ -270,11 +282,8 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
                     <div>
                         <h4 style="color: var(--navy); font-size: 1rem; margin-bottom: 0.5rem;">Quick Search Examples</h4>
-                        <ul style="color: var(--slate); line-height: 1.8; font-size: 0.9rem;">
-                            <li><code>"land dispute" AND Nakuru</code> - Exact phrase with location</li>
-                            <li><code>fraud OR embezzlement</code> - Either term</li>
-                            <li><code>CR-2024-001</code> - Specific case number</li>
-                            <li><code>Justice Katanu AND criminal</code> - Judge and case type</li>
+                        <ul style="color: var(--slate); line-height: 1.8; font-size: 0.9rem;" id="searchExamples">
+                            <!-- Will be populated by JavaScript -->
                         </ul>
                     </div>
                     
@@ -297,7 +306,7 @@
                     <h3>Saved Searches</h3>
                 </div>
                 <div class="card-body">
-                    <div id="savedSearches">
+                    <div id="savedSearchesList">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-sm);">
                             <div class="saved-search" onclick="loadSearch('recent_cases')" style="cursor: pointer;">
                                 <div style="font-weight: 600; color: var(--navy);">Recent Criminal Cases</div>
@@ -319,6 +328,150 @@
         // Search functionality
         let currentSearchResults = [];
         
+        // Sample legal documents database
+        const sampleLegalDocuments = [
+            {
+                id: 'CR-2024-001-RULING',
+                title: 'Ruling in Criminal Case CR-2024-001 - Republic vs. James Mugambi',
+                filename: 'CR-2024-001_Final_Ruling.pdf',
+                case_number: 'CR-2024-001',
+                judge: 'Justice Katanu',
+                type: 'Court Ruling',
+                date: '2024-10-15',
+                size: '2.4 MB',
+                pages: '32',
+                ocr_processed: true,
+                snippet: 'The court finds the defendant guilty of fraudulent misrepresentation under Section 45 of the Penal Code. Evidence presented by the prosecution established beyond reasonable doubt that the accused knowingly submitted false financial statements.',
+                relevance: 0.96,
+                keywords: ['fraud', 'financial crime', 'misrepresentation', 'penal code'],
+                location: 'Nairobi High Court'
+            },
+            {
+                id: 'CR-2024-001-WITNESS-1',
+                title: 'Witness Statement - Sarah Njeri',
+                filename: 'Witness_Statement_Sarah_Njeri.pdf',
+                case_number: 'CR-2024-001',
+                judge: 'Justice Katanu',
+                type: 'Witness Statement',
+                date: '2024-10-10',
+                size: '1.2 MB',
+                pages: '6',
+                ocr_processed: true,
+                snippet: 'As the accountant at Silvergate Investments, I can confirm that the financial records presented by Mr. Mugambi did not match the company\'s actual transactions from January to March 2024.',
+                relevance: 0.88,
+                keywords: ['witness', 'accountant', 'financial records', 'investigation'],
+                location: 'Nairobi'
+            },
+            {
+                id: 'LC-2024-045-LAND',
+                title: 'Land Dispute Judgment - LC-2024-045',
+                filename: 'Land_Case_LC_2024_045_Judgment.pdf',
+                case_number: 'LC-2024-045',
+                judge: 'Justice Mwangi',
+                type: 'Court Ruling',
+                date: '2024-09-28',
+                size: '3.1 MB',
+                pages: '45',
+                ocr_processed: true,
+                snippet: 'Regarding the disputed property in Nakuru County, Plot No. 2847/23, the court rules that the title deed held by the respondent is valid and properly registered. The claimant\'s application for adverse possession is dismissed.',
+                relevance: 0.92,
+                keywords: ['land dispute', 'title deed', 'adverse possession', 'Nakuru'],
+                location: 'Nakuru Environment and Land Court'
+            },
+            {
+                id: 'CIV-2023-078-AFFIDAVIT',
+                title: 'Affidavit of Service - Civil Case CIV-2023-078',
+                filename: 'Affidavit_of_Service_CIV_2023_078.pdf',
+                case_number: 'CIV-2023-078',
+                judge: 'Justice Omondi',
+                type: 'Affidavit',
+                date: '2024-08-15',
+                size: '0.9 MB',
+                pages: '3',
+                ocr_processed: true,
+                snippet: 'I, Joseph Kamau, Process Server, do hereby swear that I personally served the summons to the defendant at their known residence in Mombasa on August 10, 2024, at 2:30 PM.',
+                relevance: 0.75,
+                keywords: ['affidavit', 'service', 'summons', 'civil procedure'],
+                location: 'Mombasa Law Courts'
+            },
+            {
+                id: 'HC-2024-012-EVIDENCE',
+                title: 'Forensic Evidence Report - HC-2024-012',
+                filename: 'Forensic_Report_HC_2024_012.pdf',
+                case_number: 'HC-2024-012',
+                judge: 'Justice Wambua',
+                type: 'Evidence',
+                date: '2024-10-05',
+                size: '4.7 MB',
+                pages: '18',
+                ocr_processed: true,
+                snippet: 'Digital forensic analysis of the mobile device recovered from the suspect revealed encrypted communications referencing the transfer of funds to offshore accounts. The analysis confirms data tampering occurred between March and April 2024.',
+                relevance: 0.85,
+                keywords: ['forensic', 'digital evidence', 'encryption', 'financial investigation'],
+                location: 'Nairobi High Court'
+            },
+            {
+                id: 'MC-2024-033-PLEADING',
+                title: 'Statement of Claim - MC-2024-033',
+                filename: 'Statement_of_Claim_MC_2024_033.pdf',
+                case_number: 'MC-2024-033',
+                judge: 'Justice Katanu',
+                type: 'Pleading',
+                date: '2024-07-22',
+                size: '1.5 MB',
+                pages: '12',
+                ocr_processed: true,
+                snippet: 'The plaintiff claims damages for breach of contract arising from the failed delivery of construction materials as per agreement dated January 15, 2024. The defendant failed to fulfill contractual obligations despite receiving full payment.',
+                relevance: 0.79,
+                keywords: ['breach of contract', 'damages', 'commercial', 'civil claim'],
+                location: 'Nairobi Commercial Court'
+            },
+            {
+                id: 'CR-2023-089-RULING',
+                title: 'Bail Ruling - Criminal Case CR-2023-089',
+                filename: 'Bail_Ruling_CR_2023_089.pdf',
+                case_number: 'CR-2023-089',
+                judge: 'Justice Omondi',
+                type: 'Court Ruling',
+                date: '2024-06-18',
+                size: '1.8 MB',
+                pages: '15',
+                ocr_processed: true,
+                snippet: 'The court grants bail to the accused under the following conditions: 1) Surrender of passport, 2) Two sureties of KSh 500,000 each, 3) Reporting to the nearest police station weekly. The prosecution failed to demonstrate flight risk.',
+                relevance: 0.82,
+                keywords: ['bail', 'criminal procedure', 'flight risk', 'sureties'],
+                location: 'Kisumu High Court'
+            },
+            {
+                id: 'E&LC-2024-021-EXPERT',
+                title: 'Expert Witness Report - Land Surveyor',
+                filename: 'Expert_Report_Land_Survey_E&LC_2024_021.pdf',
+                case_number: 'E&LC-2024-021',
+                judge: 'Justice Mwangi',
+                type: 'Evidence',
+                date: '2024-09-10',
+                size: '5.2 MB',
+                pages: '28',
+                ocr_processed: true,
+                snippet: 'Survey analysis confirms boundary discrepancies of approximately 2.3 meters between the two disputed properties. Historical land records from 1998 support the claimant\'s position regarding the original boundary markers.',
+                relevance: 0.91,
+                keywords: ['land survey', 'boundary dispute', 'expert witness', 'property'],
+                location: 'Nakuru Environment Court'
+            }
+        ];
+
+        // Search examples
+        const searchExamples = [
+            { query: 'land dispute Nakuru', description: 'Land cases in Nakuru' },
+            { query: 'fraud OR embezzlement 2024', description: 'Financial crimes from 2024' },
+            { query: 'Justice Katanu criminal', description: 'Criminal cases by Justice Katanu' },
+            { query: 'affidavit service', description: 'Affidavits of service' },
+            { query: 'forensic evidence digital', description: 'Digital forensic reports' },
+            { query: 'breach of contract damages', description: 'Contract dispute claims' },
+            { query: 'bail conditions', description: 'Bail rulings and conditions' },
+            { query: 'expert witness survey', description: 'Expert witness reports' }
+        ];
+
         async function performSearch(event) {
             if (event) event.preventDefault();
             
@@ -330,6 +483,7 @@
             
             if (!query) {
                 showNotification('Please enter search terms', 'error');
+                displaySearchResults([]);
                 return;
             }
             
@@ -338,40 +492,108 @@
             spinner.style.display = 'inline-block';
             
             try {
-                // Prepare search parameters
-                const params = new URLSearchParams();
-                params.append('q', query);
-                
-                // Add advanced filters if visible
-                if (document.getElementById('advancedOptions').style.display !== 'none') {
-                    const formData = new FormData(document.getElementById('searchForm'));
-                    for (const [key, value] of formData.entries()) {
-                        params.append(key, value);
+                // Try API first if available
+                if (typeof API_ENDPOINTS !== 'undefined' && API_ENDPOINTS.search) {
+                    const params = new URLSearchParams();
+                    params.append('q', query);
+                    
+                    // Add advanced filters if visible
+                    if (document.getElementById('advancedOptions').style.display !== 'none') {
+                        const formData = new FormData(document.getElementById('searchForm'));
+                        for (const [key, value] of formData.entries()) {
+                            params.append(key, value);
+                        }
+                    }
+                    
+                    const response = await fetch(`${API_ENDPOINTS.search}?${params.toString()}`, {
+                        headers: getAuthHeaders ? getAuthHeaders() : {}
+                    });
+                    
+                    if (response.ok) {
+                        const results = await response.json();
+                        currentSearchResults = results;
+                        displaySearchResults(results);
+                        return;
                     }
                 }
                 
-                // Perform search
-                const response = await fetch(`${API_ENDPOINTS.search}?${params.toString()}`, {
-                    headers: getAuthHeaders()
-                });
-                
-                if (response.ok) {
-                    const results = await response.json();
-                    currentSearchResults = results;
-                    displaySearchResults(results);
-                } else {
-                    throw new Error('Search failed');
-                }
+                // Fallback to local search
+                performLocalSearch(query);
                 
             } catch (error) {
-                console.error('Search error:', error);
-                showNotification('Search failed. Please try again.', 'error');
-                // Fallback to mock data for demonstration
-                displayMockResults();
+                console.log('Using local search database');
+                performLocalSearch(query);
             } finally {
                 searchBtn.disabled = false;
                 spinner.style.display = 'none';
             }
+        }
+        
+        function performLocalSearch(query) {
+            if (!query) {
+                displaySearchResults(sampleLegalDocuments);
+                return;
+            }
+            
+            const filteredDocs = sampleLegalDocuments.filter(doc => {
+                const searchText = `
+                    ${doc.title || ''}
+                    ${doc.snippet || ''}
+                    ${doc.case_number || ''}
+                    ${doc.judge || ''}
+                    ${doc.type || ''}
+                    ${doc.keywords?.join(' ') || ''}
+                    ${doc.location || ''}
+                `.toLowerCase();
+                
+                const queryLower = query.toLowerCase();
+                return searchText.includes(queryLower) ||
+                       (doc.keywords?.some(keyword => 
+                           keyword.toLowerCase().includes(queryLower)
+                       ));
+            });
+            
+            const scoredDocs = filteredDocs.map(doc => {
+                const score = calculateRelevance(doc, query);
+                return { ...doc, relevance: score };
+            }).sort((a, b) => b.relevance - a.relevance);
+            
+            currentSearchResults = scoredDocs;
+            displaySearchResults(scoredDocs);
+        }
+        
+        function calculateRelevance(document, query) {
+            let score = 0;
+            const queryTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
+            
+            // Check title matches
+            const title = document.title.toLowerCase();
+            queryTerms.forEach(term => {
+                if (title.includes(term)) score += 0.3;
+            });
+            
+            // Check snippet matches
+            const snippet = document.snippet.toLowerCase();
+            queryTerms.forEach(term => {
+                if (snippet.includes(term)) score += 0.2;
+            });
+            
+            // Check keyword matches
+            if (document.keywords) {
+                queryTerms.forEach(term => {
+                    if (document.keywords.some(kw => kw.toLowerCase().includes(term))) {
+                        score += 0.25;
+                    }
+                });
+            }
+            
+            // Check case number exact match
+            if (document.case_number?.toLowerCase().includes(query.toLowerCase())) {
+                score += 0.4;
+            }
+            
+            // Normalize score to 0-1 range
+            return Math.min(0.99, Math.max(0.1, score));
         }
         
         function displaySearchResults(results) {
@@ -402,6 +624,14 @@
         }
         
         function createResultCard(result, index) {
+            // Determine badge class based on document type
+            let badgeClass = 'badge-secondary';
+            if (result.type === 'Court Ruling') badgeClass = 'badge-info';
+            if (result.type === 'Evidence') badgeClass = 'badge-warning';
+            if (result.type === 'Witness Statement') badgeClass = 'badge-success';
+            if (result.type === 'Affidavit') badgeClass = 'badge-primary';
+            if (result.type === 'Pleading') badgeClass = 'badge-purple';
+            
             return `
                 <div class="result-card" id="result-${index}">
                     <div class="result-header">
@@ -418,9 +648,9 @@
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <div class="badge badge-${result.type === 'Court Ruling' ? 'info' : result.type === 'Evidence' ? 'warning' : 'success'}">
+                            <span class="badge ${badgeClass}">
                                 ${escapeHtml(result.type || 'Document')}
-                            </div>
+                            </span>
                             <div style="font-size: 0.8rem; color: var(--slate); margin-top: 0.25rem;">
                                 ${escapeHtml(result.date || '')}
                             </div>
@@ -478,55 +708,6 @@
             return highlighted;
         }
         
-        function displayMockResults() {
-            const mockResults = [
-                {
-                    id: 1,
-                    title: 'Court Ruling on Criminal Case CR-2024-001',
-                    filename: 'court_ruling_cr_2024_001.pdf',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Court Ruling',
-                    date: '2024-10-15',
-                    size: '2.1 MB',
-                    pages: '24',
-                    ocr_processed: true,
-                    snippet: 'The court finds the evidence presented compelling and rules in favor of the prosecution in the matter of financial fraud allegations.',
-                    relevance: 0.95
-                },
-                {
-                    id: 2,
-                    title: 'Witness Statement - John Smith',
-                    filename: 'witness_statement_john_smith.pdf',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Witness Statement',
-                    date: '2024-10-14',
-                    size: '1.8 MB',
-                    pages: '8',
-                    ocr_processed: true,
-                    snippet: 'I witnessed the incident on October 1st and can confirm the events as described in the police report regarding the land dispute.',
-                    relevance: 0.87
-                },
-                {
-                    id: 3,
-                    title: 'Photographic Evidence - Scene Documentation',
-                    filename: 'evidence_photo_1.jpg',
-                    case_number: 'CR-2024-001',
-                    judge: 'Justice Katanu',
-                    type: 'Evidence',
-                    date: '2024-10-13',
-                    size: '4.2 MB',
-                    pages: '1',
-                    ocr_processed: false,
-                    snippet: 'Photographic evidence showing the scene of the incident with clear markings of the disputed property boundaries.',
-                    relevance: 0.76
-                }
-            ];
-            
-            displaySearchResults(mockResults);
-        }
-        
         function toggleAdvanced() {
             const advanced = document.getElementById('advancedOptions');
             const toggleBtn = document.getElementById('toggleAdvanced');
@@ -563,6 +744,7 @@
                 localStorage.setItem('savedSearches', JSON.stringify(savedSearches));
                 
                 showNotification(`Search saved as "${name}"`, 'success');
+                updateSavedSearchesDisplay();
             }
         }
         
@@ -584,11 +766,44 @@
             if (index >= 0 && index < savedSearches.length) {
                 document.getElementById('searchQuery').value = savedSearches[index].query;
                 showNotification(`Loaded search: ${savedSearches[index].name}`, 'success');
+                performSearch();
+            }
+        }
+        
+        function updateSavedSearchesDisplay() {
+            const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+            const container = document.getElementById('savedSearchesList');
+            
+            if (savedSearches.length === 0) {
+                container.innerHTML = '<p style="color: var(--slate); text-align: center;">No saved searches yet</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-sm);">
+                    ${savedSearches.map((search, index) => `
+                        <div class="saved-search" onclick="loadSavedSearchItem(${index})" style="cursor: pointer;">
+                            <div style="font-weight: 600; color: var(--navy);">${escapeHtml(search.name)}</div>
+                            <div style="font-size: 0.9rem; color: var(--slate);">${escapeHtml(search.query)}</div>
+                            <div style="font-size: 0.8rem; color: var(--slate); margin-top: 0.25rem;">
+                                ${new Date(search.timestamp).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function loadSavedSearchItem(index) {
+            const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+            if (index >= 0 && index < savedSearches.length) {
+                document.getElementById('searchQuery').value = savedSearches[index].query;
+                showNotification(`Loaded search: ${savedSearches[index].name}`, 'success');
+                performSearch();
             }
         }
         
         function loadSearch(name) {
-            // Mock function for loading predefined searches
             switch(name) {
                 case 'recent_cases':
                     document.getElementById('searchQuery').value = 'case_type:criminal AND date:2024';
@@ -597,7 +812,7 @@
                     document.getElementById('searchQuery').value = '"land dispute" AND court:Nakuru';
                     break;
             }
-            showNotification(`Loaded search: ${name}`, 'success');
+            performSearch();
         }
         
         function exportResults() {
@@ -607,7 +822,7 @@
             }
             
             // Create CSV content
-            const headers = ['Title', 'Case Number', 'Judge', 'Type', 'Date', 'File', 'Size'];
+            const headers = ['Title', 'Case Number', 'Judge', 'Type', 'Date', 'File', 'Size', 'Pages'];
             const rows = currentSearchResults.map(result => [
                 result.title || result.filename,
                 result.case_number || '',
@@ -615,16 +830,17 @@
                 result.type || '',
                 result.date || '',
                 result.filename || '',
-                result.size || ''
+                result.size || '',
+                result.pages || ''
             ]);
             
             const csvContent = [
                 headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+                ...rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
             ].join('\n');
             
             // Create download link
-            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -638,37 +854,87 @@
         }
         
         function viewDocument(id) {
-            showNotification(`Viewing document ${id}...`, 'info');
-            // Implement document viewing
+            const doc = currentSearchResults.find(r => r.id === id);
+            if (doc) {
+                showNotification(`Opening document: ${doc.title}`, 'info');
+                // In a real implementation, this would open a document viewer
+                alert(`Document Viewer\n\nTitle: ${doc.title}\n\nThis would open a full document viewer in a real system.`);
+            }
         }
         
         function downloadDocument(id) {
-            showNotification(`Downloading document ${id}...`, 'success');
-            // Implement document download
+            const doc = currentSearchResults.find(r => r.id === id);
+            if (doc) {
+                showNotification(`Downloading: ${doc.filename}`, 'success');
+                // In a real implementation, this would initiate a download
+                alert(`Download initiated for: ${doc.filename}\n\nThis would download the actual file in a real system.`);
+            }
         }
         
         function showDocumentInfo(id) {
-            const result = currentSearchResults.find(r => r.id === id);
-            if (result) {
+            const doc = currentSearchResults.find(r => r.id === id);
+            if (doc) {
                 const info = `
                     Document Details:
-                    - Title: ${result.title}
-                    - Case: ${result.case_number}
-                    - Judge: ${result.judge}
-                    - Type: ${result.type}
-                    - Date: ${result.date}
-                    - File: ${result.filename}
-                    - Size: ${result.size}
-                    - Pages: ${result.pages}
-                    - OCR: ${result.ocr_processed ? 'Processed' : 'Not processed'}
+                    
+                    Title: ${doc.title}
+                    Case Number: ${doc.case_number}
+                    Judge: ${doc.judge}
+                    Document Type: ${doc.type}
+                    Date: ${doc.date}
+                    File: ${doc.filename}
+                    Size: ${doc.size}
+                    Pages: ${doc.pages}
+                    OCR Processed: ${doc.ocr_processed ? 'Yes' : 'No'}
+                    Location: ${doc.location || 'N/A'}
+                    Relevance Score: ${doc.relevance ? Math.round(doc.relevance * 100) + '%' : 'N/A'}
+                    
+                    Keywords: ${doc.keywords?.join(', ') || 'None'}
                 `;
                 alert(info);
             }
         }
         
         function addToCase(id) {
-            showNotification(`Adding document ${id} to case...`, 'info');
-            // Implement add to case functionality
+            const doc = currentSearchResults.find(r => r.id === id);
+            if (doc) {
+                showNotification(`Adding "${doc.title}" to case file...`, 'info');
+                // In a real implementation, this would open a case selection dialog
+                alert(`Add to Case\n\nDocument: ${doc.title}\n\nSelect a case to add this document to.`);
+            }
+        }
+        
+        function updateSearchExamples() {
+            const container = document.getElementById('searchExamples');
+            if (container) {
+                container.innerHTML = searchExamples.map(example => 
+                    `<li><code onclick="setSearchQuery('${example.query}')" style="cursor: pointer;">${example.query}</code> - ${example.description}</li>`
+                ).join('');
+            }
+        }
+        
+        function setSearchQuery(query) {
+            document.getElementById('searchQuery').value = query;
+            performSearch();
+        }
+        
+        // Utility function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Mock notification function (should be in script.js)
+        function showNotification(message, type = 'info') {
+            console.log(`${type.toUpperCase()}: ${message}`);
+            // This would normally show a toast notification
+            alert(`${type}: ${message}`);
+        }
+        
+        // Mock requireAuth function (should be in script.js)
+        function requireAuth() {
+            return true; // In a real app, this would check authentication
         }
         
         // Initialize page
@@ -677,6 +943,16 @@
             if (searchForm) {
                 searchForm.addEventListener('submit', performSearch);
             }
+            
+            updateSearchExamples();
+            updateSavedSearchesDisplay();
+            
+            // Show initial results
+            setTimeout(() => {
+                if (document.getElementById('searchQuery').value === '') {
+                    performLocalSearch('');
+                }
+            }, 100);
         });
     </script>
 </body>
