@@ -51,7 +51,7 @@ The platform provides a centralized hub for judicial officers to upload case fil
 ### Installation & Usage
 1. **Clone the Repository:**
    ```bash
-   git clone [https://github.com/katanujoy/Judiciary-final-year-project-html-css.git](https://github.com/katanujoy/Judiciary-final-year-project-html-css.git)
+   git clone [https://github.com/katanujoy/Judiciary-backup-system-html-css.git](https://github.com/katanujoy/Judiciary-backup-system-html-css.git)
    ```
 2. **Launch the Frontend:**
    Simply open `index.html` in your browser to view the login and authentication portal.
